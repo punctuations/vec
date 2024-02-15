@@ -1,0 +1,49 @@
+{
+	"name": "vec",
+	"description": "a zero dependencies, modern vector lib.",
+	"version": "0.0.10",
+	"types": "./dist/index.d.ts",
+	"type": "module",
+	"exports": {
+		"import": "./dist/index.js",
+		"require": "./dist/index.cjs"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/punctuations/vec.git"
+	},
+	"author": "Matt <hey@mattt.space> (https://mattt.space)",
+	"license": "MIT",
+	"funding": {
+		"type": "github",
+		"url": "https://github.com/sponsors/punctuations"
+	},
+	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "^5.3.1",
+		"@typescript-eslint/parser": "^5.3.1",
+		"eslint": "^8.2.0",
+		"eslint-config-xo": "^0.39.0",
+		"eslint-config-xo-typescript": "^0.47.1",
+		"prettier": "^2.4.1",
+		"tsup": "^5.7.0",
+		"typescript": "^4.4.4"
+	},
+	"scripts": {
+		"build": "tsup src/index.ts --dts --format esm,cjs",
+		"lint": "eslint ./src/**/*.ts",
+		"fix": "eslint ./src/**/*.ts --fix",
+		"prepublish": "yarn build"
+	},
+	"bugs": {
+		"url": "https://github.com/punctuations/vec/issues"
+	},
+	"homepage": "https://github.com/punctuations/vec#readme",
+	"files": [
+		"dist",
+		"package.json"
+	],
+	"keywords": [
+		"typescript",
+		"vector"
+	]
+}
