@@ -220,7 +220,7 @@ export class Vec3 {
 	 *
 	 * Reverse the direction of all axis, such that it is anti-parallel
 	 *
-	 * @returns Vec2
+	 * @returns Vec3
 	 */
 	antiparalell() {
 		this._x = -this._x;
@@ -235,7 +235,7 @@ export class Vec3 {
 	 * Reverse the direction of all axis, such that it is anti-parallel
 	 * (alias function for vec.antiparallel)
 	 *
-	 * @returns Vec2
+	 * @returns Vec3
 	 */
 	oppose() {
 		this.antiparalell();
