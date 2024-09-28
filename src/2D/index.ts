@@ -42,7 +42,7 @@ export class Vec2 {
 
 		this._mag = this._calculateMagnitude();
 
-		Vec3.prototype.dimensions, Vec3.prototype.length = 2;
+		Vec2.prototype.dimensions, Vec2.prototype.length = 2;
     }
     
 	private static isVec2Coords(obj: any): obj is Vec2Coords {
@@ -178,7 +178,7 @@ export class Vec2 {
 	/**
 	 *
 	 * Reverse the direction of all axis, such that it is anti-parallel
-	 * (alias function for vec.antiparallel)
+	 * (alias function for {@link antiparalell})
 	 *
 	 * @returns Vec2
 	 */
@@ -240,7 +240,7 @@ export class Vec2 {
 	distance(v1: Vector2Like): number {
 		v1 = this._vectorize(v1);
 
-		return Math.hypot((this._x**2 - v1[0]**2) + (this._y**2 - v1[1]**2))
+		return Math.hypot((this._x**2 - v1[0]**2), (this._y**2 - v1[1]**2))
 	}
 
 	/**
@@ -257,7 +257,7 @@ export class Vec2 {
 			theta *= Math.PI / 180;
 		}
 
-		this._x = this._mag * Math.sin(theta);
+		this._x = this._mag * Math.cos(theta);
 		this._y = this._mag * Math.sin(theta);
 
 		return this;
@@ -427,6 +427,24 @@ export class Vec2 {
 	}
 
 	/**
+	 * Segment vector between two points.
+	 * From A to B
+	 * 
+	 * @param A First Point
+	 * @param B Second Point
+	 * @returns Vec2
+	 */
+	segvec(A: Vector2Like, B: Vector2Like) {
+		A = this._vectorize(A);
+		B = this._vectorize(B);
+
+		this._x = B[0] - A[0];
+		this._y = B[1] - A[1];
+
+		return this;
+	}
+
+	/**
 	 *
 	 * Add together two vectors, vector sum is this vector.
 	 *
@@ -501,6 +519,10 @@ export class Vec2 {
 		yield this._x;
 		yield this._y;
 
+	}
+
+	*[ Symbol.length ]() {
+		yield this.dimensions;
 	}
 }
 

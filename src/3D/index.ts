@@ -1,5 +1,5 @@
 import { Vec2 } from '../2D';
-import { Matrix, MatrixLike } from '../math';
+import { Matrix, MatrixLike } from '../math/matrix';
 
 export type Vector = Float32Array | Float64Array;
 export type Vector3Like =
@@ -220,7 +220,7 @@ export class Vec3 {
 	 *
 	 * Reverse the direction of all axis, such that it is anti-parallel
 	 *
-	 * @returns Vec2
+	 * @returns Vec3
 	 */
 	antiparalell() {
 		this._x = -this._x;
@@ -233,9 +233,9 @@ export class Vec3 {
 	/**
 	 *
 	 * Reverse the direction of all axis, such that it is anti-parallel
-	 * (alias function for vec.antiparallel)
+	 * (alias function for {@link antiparalell})
 	 *
-	 * @returns Vec2
+	 * @returns Vec3
 	 */
 	oppose() {
 		this.antiparalell();
@@ -295,7 +295,7 @@ export class Vec3 {
 	distance(v1: Vector3Like): number {
 		v1 = this._vectorize(v1);
 
-		return Math.hypot((this._x**2 - v1[0]**2) + (this._y**2 - v1[1]**2) + (this._z**2 - v1[2]**2))
+		return Math.hypot((this._x**2 - v1[0]**2), (this._y**2 - v1[1]**2), (this._z**2 - v1[2]**2))
 	}
 
 	/**
@@ -414,6 +414,25 @@ export class Vec3 {
 		}
 
 		return theta;
+	}
+
+	/**
+	 * Segment vector between two points.
+	 * From A to B
+	 * 
+	 * @param A First Point
+	 * @param B Second Point
+	 * @returns Vec2
+	 */
+	segvec(A: Vector3Like, B: Vector3Like) {
+		A = this._vectorize(A);
+		B = this._vectorize(B);
+
+		this._x = B[0] - A[0];
+		this._y = B[1] - A[1];
+		this._z = B[2] - A[2];
+
+		return this;
 	}
 
 	/**
@@ -577,8 +596,6 @@ export class Vec3 {
 		return this;
 	}
 
-	/* maybe wrong word? projection matrix? maybe 'capture' instead to reinfornce camera-ness */
-
 	/**
 	 *
 	 * Project the 3D Vector onto a 2D plane.
@@ -682,18 +699,16 @@ export class Vec3 {
 		return new Vec2(tx, ty);
 	}
 
-	scale(v: number[] | MatrixLike) {
-		// scale vector
-		if (v[0]) {
-		}
-	}
-
 	*[ Symbol.iterator ]() {
 
 		yield this._x;
 		yield this._y;
 		yield this._z;
 
+	}
+
+	*[ Symbol.length ]() {
+		yield this.dimensions;
 	}
 }
 

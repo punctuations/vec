@@ -1,3 +1,4 @@
+/* <-- ALL WIP --> */
 export type MatrixLike = number[][] | Float32Array[] | Float64Array[];
 
 export class Matrix {
@@ -13,7 +14,7 @@ export class Matrix {
             this._cols = matrix;
             this._isSquare = true;
 
-			this._set(matrix);
+			this._setScalar(matrix);
 		} else {
 			if (matrix.length === 0 || matrix[0].length === 0)
 				throw new Error('Invalid matrix: must have at least one element.');
@@ -37,7 +38,21 @@ export class Matrix {
 		Matrix.prototype.dimensions, Matrix.prototype.length = [this._rows, this._cols];
 	}
 
-	private _set(c: number) {
+	private _set(m: Matrix | MatrixLike) {
+		if (m instanceof Matrix) {
+			m = m._matrix;
+		}
+
+		if (m.length === m[0].length) this._isSquare = true;
+
+		for (let i = 0; i < this._rows; i++) {
+			for (let j = 0; j < this._cols; j++) {
+				this._matrix[i][j] = m[i][j];
+			}
+		}
+	}
+
+	private _setScalar(c: number) {
 		for (let i = 0; i < this._rows; i++) {
 			for (let j = 0; j < this._cols; j++) {
 				this._matrix[i][j] = c;
@@ -58,6 +73,14 @@ export class Matrix {
 		this._rows = rows;
 
 		// create new this._matrix with new row number
+		for (let i = 0; i < rows; i++) {
+			if (this._matrix[i] === undefined) {
+				// fill in new columns in this row with zero
+				for (let j = 0; j < this._cols; j++) {
+					this._matrix[i][j] = 0;
+				}
+			}
+		}
 	}
 
 	get cols() {
@@ -73,6 +96,13 @@ export class Matrix {
 		this._cols = cols;
 
 		// create new this._matrix with new column number
+		for (let i = 0; i < this._rows; i++) {
+			for (let j = 0; j < cols; j++) {
+				if (this._matrix[i][j] === undefined) {
+					this._matrix[i][j] = 0;
+				}
+			}
+		}
 	}
 
 	/**
@@ -92,7 +122,7 @@ export class Matrix {
 	 * @returns Matrix
 	 */
 	zero() {
-		this._set(0);
+		this._setScalar(0);
 	}
 
 	/**
@@ -103,11 +133,70 @@ export class Matrix {
 	 */
 	identity() {
 		// make 1 in diagonal
+		for (let i = 0; i < this._rows; i++) {
+			for (let j = 0; j < this._cols; j++) {
+				if (i === j) {
+					this._matrix[i][j] = 1;
+				} else {
+					this._matrix[i][j] = 0;
+				}
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * Reduce matrix to row echelon form.
+	 * 
+	 * @param m matrix
+	 * 
+	 * @returns Matrix
+	 */
+	rref(m: MatrixLike): Matrix {
+		// https://en.wikipedia.org/wiki/Row_echelon_form
+	
+		// untested!
+		let lead = 0;
+		for (let r = 0; r < this._rows; r++) {
+			if (this._cols <= lead) {
+				return new Matrix(m); // Return a valid Matrix instance
+			}
+			let i = r;
+			while (this._matrix[i][lead] === 0) {
+				i++;
+				if (this._rows === i) {
+					i = r;
+					lead++;
+					if (this._cols === lead) {
+						return new Matrix(m); // Return a valid Matrix instance
+					}
+				}
+			}
+			let temp = this._matrix[i];
+			this._matrix[i] = this._matrix[r];
+			this._matrix[r] = temp;
+			let val = this._matrix[r][lead];
+			for (let j = 0; j < this._cols; j++) {
+				this._matrix[r][j] /= val;
+			}
+			for (let k = 0; k < this._rows; k++) {
+				if (k !== r) {
+					val = this._matrix[k][lead];
+					for (let j = 0; j < this._cols; j++) {
+						this._matrix[k][j] -= val * this._matrix[r][j];
+					}
+				}
+			}
+			lead++;
+		}
+	
+	
+		return new Matrix(m);
 	}
 
 	// either return NEW matrix __OR__ change current matrix value
 	// return new matrix
-	add(m1: MatrixLike) {
+	add(m1: MatrixLike): Matrix {
 		let m_buffer: number[][] = [];
 
 		if (this._isSquare) {
@@ -116,13 +205,15 @@ export class Matrix {
 					m_buffer[i][j] = this._matrix[i][j] + m1[i][j];
 				}
 			}
+		} else {
+			throw new Error('Matrix must be square');
 		}
 
 		return new Matrix(m_buffer);
 	}
 
 	// create alias of 'sub'
-	subtract(m1: MatrixLike) {
+	subtract(m1: MatrixLike): Matrix {
 		let m_buffer: number[][] = [];
 
 		if (this._isSquare) {
@@ -136,14 +227,44 @@ export class Matrix {
 		return new Matrix(m_buffer);
 	}
 
-	multiply(m1: MatrixLike) {}
+	// support m x n and n x n matrix multiplication.
+	// will have height of m1 and width of m2
+	// https://en.wikipedia.org/wiki/Matrix_multiplication
+	multiply(m1: MatrixLike | Matrix): Matrix {
+		
+		if (m1 instanceof Matrix) {
+			m1 = m1._matrix;
+		};
+
+		// new matrix dimensions: m1.rows x m2.cols
+		for (let i = 0; i < this._rows; i++) {
+			for (let j = 0; j < m1[0].length; j++) {
+				m1[i][j] = this._matrix[i][j] * m1[i][j];
+			}
+		}
+
+		this.dimensions = [this._rows, m1[0].length];
+		this._cols = m1[0].length;
+
+		this._set(m1);
+		return this;
+	}
 
 	// create alias of 'div'
 	divide(m1: MatrixLike) {}
 
+	power_of(n: number): Matrix {
+		// compute matrix multiplication n times
+		let matrix: MatrixLike | Matrix = this._matrix;
+		for (let i = 0; i < n; i++) {
+			matrix = this.multiply(matrix);
+		}
+		return this;
+	}
+
 	// ->> special functions
 
-	// new Matrix([[0, 1], [-1, 0]]).pow(2)
+	// new Matrix([[0, 1], [-1, 0]]).pow(2) => 2^(A), where A is the matrix
 	pow(base: number): number {
 		return 0;
 	}
@@ -155,7 +276,10 @@ export class Matrix {
 
 	// not sure what the iterable should be yet **
 	*[Symbol.iterator]() {
+
 		yield this._rows;
+		yield this._cols;
+		
 	}
 }
 
