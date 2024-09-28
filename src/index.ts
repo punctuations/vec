@@ -3,3 +3,4 @@ export { Vec2, Vector2Like } from './2D';
 
 
 export { vec } from './math/vec';
+
