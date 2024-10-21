@@ -81,6 +81,7 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 				continue;
 			}
 
+			// vectors are collinear
 			return true;
 		},
 		normalize: (vec: VectorNLike) => {
