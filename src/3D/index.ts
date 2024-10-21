@@ -235,7 +235,7 @@ export class Vec3 {
 	/**
 	 *
 	 * Reverse the direction of all axis, such that it is anti-parallel
-	 * (alias function for {@link antiparalell})
+	 * @see (alias function for {@link antiparalell})
 	 *
 	 * @returns Vec3
 	 */
@@ -279,15 +279,34 @@ export class Vec3 {
 		return v2;
 	}
 
+	/**
+	 *
+	 * Returns outer product (direct product) of two vectors.
+	 *
+	 * @param v1 Vector
+	 * @returns new Matrix
+	 */
 	outer(v1: Vector3Like): Matrix {
 		v1 = this._vectorize(v1);
 
+		// RETURN MATRIX @see https://i.stack.imgur.com/80AA9.jpg
 		return new Matrix([
-			[0, -1],
-			[1, 0],
+			[this._x * v1[0], this._x * v1[1], this._x * v1[2]],
+			[this._y * v1[0], this._y * v1[1], this._y * v1[2]],
+			[this._z * v1[0], this._z * v1[1], this._z * v1[2]],
 		]);
+	}
 
-		// TODO: RETURN MATRIX @see https://i.stack.imgur.com/80AA9.jpg
+	/**
+	 *
+	 * Returns outer product (direct product) of two vectors.
+	 * @see (alias function for {@link outer})
+	 *
+	 * @param v1 Vector
+	 * @returns new Matrix
+	 */
+	direct(v1: Vector3Like): Matrix {
+		return this.outer(v1);
 	}
 
 	/**
