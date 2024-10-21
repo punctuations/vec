@@ -1,5 +1,5 @@
-import {Vec2, Vector2Like} from '../2D';
-import {Vec3, Vector, Vector3Like} from '../3D';
+import { Vec2, Vector2Like } from '../2D';
+import { Vec3, Vector, Vector3Like } from '../3D';
 
 export type VectorNLike = Vector | Vector2Like | Vector3Like | number[];
 
@@ -17,7 +17,7 @@ export class VecN {
 			VecN.prototype.dimensions = v?.length || 0;
 
 			v = this._vectorize([...v]);
-			
+
 			this._coords = new Float64Array(v);
 		} else if (
 			Array.isArray(v) ||

@@ -1,27 +1,27 @@
-import { VectorNLike } from "../N"
+import { VectorNLike } from '../N';
 
 // 2D, 3D, ..., nD
 export const _vectorizeLike = (v: VectorNLike) => {
-    if (
-        !(v instanceof Float32Array) &&
-        !(v instanceof Float64Array) &&
-        !Array.isArray(v)
-    ) {
-        if ('x' in v && 'y' in v && 'z' !in v) {
-            // 2D
-            return [v.x, v.y];
-        } else {
-            // 3D
-            if ('x' in v && 'y' in v && 'z' in v) {
-                return [v.x, v.y, v.z as number];
-            } else if ('i' in v) {
-                return [v.i, v.j, v.k];
-            } else {
-                throw new Error('Not a valid Vector input.');
-            }
-        }
-    } else {
-        // nD
-        return v;
-    }
-}
+	if (
+		!(v instanceof Float32Array) &&
+		!(v instanceof Float64Array) &&
+		!Array.isArray(v)
+	) {
+		if ('x' in v && 'y' in v && 'z'! in v) {
+			// 2D
+			return [v.x, v.y];
+		} else {
+			// 3D
+			if ('x' in v && 'y' in v && 'z' in v) {
+				return [v.x, v.y, v.z as number];
+			} else if ('i' in v) {
+				return [v.i, v.j, v.k];
+			} else {
+				throw new Error('Not a valid Vector input.');
+			}
+		}
+	} else {
+		// nD
+		return v;
+	}
+};
