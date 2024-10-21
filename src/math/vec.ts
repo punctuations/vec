@@ -61,24 +61,24 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 		colinear: (span: VectorNLike | VecN, v: VectorNLike) => {
 			if (span instanceof VecN) span = span.coords;
 
-			const spanNorm = _vectorizeLike(span);
-			const vNorm = _vectorizeLike(v);
+			span = _vectorizeLike(span);
+			v = _vectorizeLike(v);
 
 			// Check if vectors have the same dimension
-			if (spanNorm.length !== vNorm.length) return false;
+			if (span.length !== v.length) return false;
 
-			// Find the first non-zero element in vNorm to use as a reference
-			const index = vNorm.findIndex(val => val !== 0);
-			if (index === -1) return false; // v is a zero vector
+			// Find to see if either of vectors is a zero vector
+			if (v.every(val => val === 0)) return false; // v is a zero vector
+			if (span.every(val => val === 0)) return true; // span is a zero vector
 
-			const scalar = spanNorm[index] / vNorm[index];
+			// there is atleast one non-zero element in v and span
+			const index = v.findIndex(val => val !== 0);
+			const gcf = span[index] / v[index];
 
-			// Check if all elements are proportional
-			for (let i = 0; i < spanNorm.length; i++) {
-				if (i === index) continue; // Skip the reference element
-				if (Math.abs(spanNorm[i] - scalar * vNorm[i]) > Number.EPSILON) {
-					return false;
-				}
+			for (let i = 0; i < span.length; i++) {
+				if (i == index) continue; // Skip the reference element
+				if (span[i] / v[i] !== gcf) return false; // if not all same ratio, then not collinear
+				continue;
 			}
 
 			return true;
