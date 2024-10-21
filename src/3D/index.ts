@@ -383,13 +383,16 @@ export class Vec3 {
 			
 			*/
 			switch (a) {
-				case 'x' || 'i':
+				case 'x':
+				case 'i':
 					theta = Math.acos(this._x / this._mag);
 					break;
-				case 'y' || 'j':
+				case 'y':
+				case 'j':
 					theta = Math.acos(this._y / this._mag);
 					break;
-				case 'z' || 'k':
+				case 'z':
+				case 'k':
 					theta = Math.acos(this._z / this._mag);
 					break;
 			}
@@ -612,15 +615,18 @@ export class Vec3 {
 
 		if (coords == 'x' || coords == 'y' || coords == 'z' || coords == 'i' || coords == 'j' || coords == 'k') {
 			switch (coords) {
-				case 'x' || 'i':
+				case 'x':
+				case 'i':
 					px = this._x;
 					py = this._z;
 					break;
-				case 'y' || 'j':
+				case 'y':
+				case 'j':
 					px = this._y;
 					py = this._z;
 					break;
-				case 'z' || 'k':
+				case 'z':
+				case 'k':
 					px = this._x;
 					py = this._y;
 					break;
