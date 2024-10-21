@@ -1,6 +1,7 @@
 import { Vector2Like } from "../2D";
 import { Vector3Like } from "../3D";
 import { VecN, VectorNLike } from "../N";
+import { _vectorizeLike } from "./util";
 
 export const vec = (domain?: [number, number], range?: [number, number]) => {
     domain = domain || [2, 3];
@@ -8,9 +9,18 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 
     return {
         add: (v1: Vector2Like | Vector3Like, v2: Vector2Like | Vector3Like) => {
-            return new VecN(v1).add(v2);
+            // into a more managable form -- is inefficient taking up memory for no reason
+            let u1 = _vectorizeLike(v1)
+            let u2 = _vectorizeLike(v2)
+
+            if (u1.length != u2.length) return new RangeError("Vectors must be same length");
+            return new VecN(u1).add(u2);
         },
         sub: (v1: Vector2Like | Vector3Like, v2: Vector2Like | Vector3Like) => {
+            let u1 = _vectorizeLike(v1)
+            let u2 = _vectorizeLike(v2)
+
+            if (u1.length != u2.length) return new RangeError("Vectors must be same length");
             return new VecN(v1).sub(v2);
         },
         multiply: (v1: Vector2Like | Vector3Like, s: number) => {
@@ -47,37 +57,32 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
          * @returns boolean
          */
         colinear: (span: VectorNLike | VecN, v: VectorNLike) => {
-            if ('x' in v) {
-                v = 'z' in v ? [v.x, v.y, v.z] : [v.x, v.y];
-            } else if ('i' in v) {
-                v = [v.i, v.j, v.k];
-            }
+            if (span instanceof VecN) span = span.coords;
 
-            if (span instanceof VecN) {
-                span = span.coords;
-            }
-
-            if ('x' in span) {
-                span = 'z' in span ? [span.x, span.y, span.z] : [span.x, span.y];
-            } else if ('i' in span) {
-                span = [span.i, span.j, span.k];
-            }
-
-            // check if v is in the span of supplied span
-            if (span.length === v.length) return false;
-
-            let t = span[0]/v[0];
-
-            for (let i = 1; i < span.length; i++) {
-                if (span[i]/v[i] === t) {
-                    continue;
-                } else {
+            const spanNorm = _vectorizeLike(span);
+            const vNorm = _vectorizeLike(v);
+        
+            // Check if vectors have the same dimension
+            if (spanNorm.length !== vNorm.length) return false;
+        
+            // Find the first non-zero element in vNorm to use as a reference
+            const index = vNorm.findIndex(val => val !== 0);
+            if (index === -1) return false; // v is a zero vector
+        
+            const scalar = spanNorm[index] / vNorm[index];
+        
+            // Check if all elements are proportional
+            for (let i = 0; i < spanNorm.length; i++) {
+                if (i === index) continue; // Skip the reference element
+                if (Math.abs(spanNorm[i] - scalar * vNorm[i]) > Number.EPSILON) {
                     return false;
                 }
             }
-
-            return true
-
+        
+            return true;
+        },
+        normalize: (vec: VectorNLike) => {
+            return _normalize(vec);
         },
         zero: (n: number) => {
             // return a zero vector in R^n
@@ -85,5 +90,10 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
         }
     };
 };
+
+function _normalize(vec: VectorNLike | VecN): number[] {
+    // TODO
+    return []
+}
 
 // vec.span([v, u]);

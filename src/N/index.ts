@@ -1,23 +1,31 @@
-import { Vector2Like } from "../2D";
-import { Vector, Vector3Like } from "../3D";
+import {Vec2, Vector2Like} from '../2D';
+import {Vec3, Vector, Vector3Like} from '../3D';
 
-export type VectorNLike =  Vector | Vector2Like | Vector3Like | number[];
+export type VectorNLike = Vector | Vector2Like | Vector3Like | number[];
 
 export class VecN {
-    private _coords: Float64Array;
+	private _coords: Float64Array;
 
 	private _mag: number = 0;
 
-    constructor();
+	constructor();
 	constructor(v: VectorNLike);
 	constructor(v?: VectorNLike) {
 		if (v === undefined) {
 			this._coords = new Float64Array([0, 0, 0, 0]);
+		} else if (v instanceof Vec2 || v instanceof Vec3) {
+			VecN.prototype.dimensions = v?.length || 0;
+
+			v = this._vectorize([...v]);
+			
+			this._coords = new Float64Array(v);
 		} else if (
 			Array.isArray(v) ||
 			v instanceof Float32Array ||
 			v instanceof Float64Array
 		) {
+			VecN.prototype.dimensions = v?.length || 0;
+
 			v = this._vectorize(v);
 
 			this._coords = new Float64Array(v);
@@ -28,7 +36,7 @@ export class VecN {
 		this._mag = this._calculateMagnitude();
 
 		VecN.prototype.dimensions = v?.length || 0;
-    }
+	}
 
 	private _calculateMagnitude(): number {
 		return Math.hypot(...Array.from(this._coords));
@@ -40,7 +48,7 @@ export class VecN {
 			!(v instanceof Float64Array) &&
 			!Array.isArray(v)
 		) {
-			if ('x' in v && 'y' in v && 'z' !in v) {
+			if ('x' in v && 'y' in v && 'z'! in v) {
 				// 2D
 				return [v.x, v.y];
 			} else {
@@ -57,29 +65,29 @@ export class VecN {
 			if (v.length == this.dimensions) {
 				return v;
 			} else {
-				throw new Error('Unable to vectorize input: exceeded vector length.')
+				throw new Error('Unable to vectorize input: exceeded vector length.');
 			}
 		}
-    }
+	}
 
 	get coords(): number[] {
 		return Array.from(this._coords);
 	}
 
-    set coords(value: number[]) {
-        this._coords = new Float64Array(value);
+	set coords(value: number[]) {
+		this._coords = new Float64Array(value);
 
-        this._mag = this._calculateMagnitude();
-    }
-	
+		this._mag = this._calculateMagnitude();
+	}
+
 	get mag(): number {
 		return this._mag;
 	}
 
 	/**
-	 * 
+	 *
 	 * Alias for {@link coords}.
-	 * 
+	 *
 	 * @returns Array
 	 */
 	toArray(): number[] {
@@ -119,8 +127,8 @@ export class VecN {
 	 */
 	zero() {
 		for (let i = 0; i < this.dimensions; i++) {
-            this._coords[i] = 0;
-        }
+			this._coords[i] = 0;
+		}
 
 		return this;
 	}
@@ -132,7 +140,7 @@ export class VecN {
 	 * @returns VecN
 	 */
 	unit() {
-		this._coords = this._coords.map((c) => c / this._mag);
+		this._coords = this._coords.map(c => c / this._mag);
 
 		return this;
 	}
@@ -145,8 +153,8 @@ export class VecN {
 	 */
 	antiparalell() {
 		for (let i = 0; i < this.dimensions; i++) {
-            this._coords[i] = -this._coords[i];
-        }
+			this._coords[i] = -this._coords[i];
+		}
 
 		return this;
 	}
@@ -172,44 +180,44 @@ export class VecN {
 	dot(v1: VectorNLike) {
 		v1 = this._vectorize(v1);
 
-        let s = [];
+		let s = [];
 
-        for (let i = 0; i < this.dimensions; i++) {
-            s.push(this._coords[i] * v1[i]);
-        }
+		for (let i = 0; i < this.dimensions; i++) {
+			s.push(this._coords[i] * v1[i]);
+		}
 
 		return Math.hypot(...s);
 	}
-	
-    // Cross product only exists in 3D and 7D, see: https://math.stackexchange.com/questions/720813/
-    //
+
+	// Cross product only exists in 3D and 7D, see: https://math.stackexchange.com/questions/720813/
+	//
 	// /**
-	//  * 
+	//  *
 	//  * Calculate the nD determinate.
-	//  * 
+	//  *
 	//  * @param v1 Vector
 	//  * @returns Scalar value
 	//  * @see https://math.stackexchange.com/questions/720813/
 	//  */
 	// cross(v1: VectorNLike) {
-    //
+	//
 	// }
 
 	/**
-	 * 
+	 *
 	 * Find the distance between two vectors.
-	 * 
+	 *
 	 * @param v1 Vector
 	 * @return distance
 	 */
 	distance(v1: VectorNLike): number {
 		v1 = this._vectorize(v1);
 
-        let s = [];
+		let s = [];
 
-        for (let i = 0; i < this.dimensions; i++) {
-            s.push((this._coords[i]**2 - v1[i]**2));
-        }
+		for (let i = 0; i < this.dimensions; i++) {
+			s.push(this._coords[i] ** 2 - v1[i] ** 2);
+		}
 
 		return Math.hypot(...s);
 	}
@@ -224,7 +232,7 @@ export class VecN {
 	max(v1: VectorNLike) {
 		v1 = this._vectorize(v1);
 
-        this._coords = this._coords.map((c, i) => Math.max(c, v1[i]));
+		this._coords = this._coords.map((c, i) => Math.max(c, v1[i]));
 
 		return this;
 	}
@@ -239,7 +247,7 @@ export class VecN {
 	min(v1: VectorNLike) {
 		v1 = this._vectorize(v1);
 
-        this._coords = this._coords.map((c, i) => Math.min(c, v1[i]));
+		this._coords = this._coords.map((c, i) => Math.min(c, v1[i]));
 
 		return this;
 	}
@@ -251,7 +259,7 @@ export class VecN {
 	 * @returns VecN
 	 */
 	ceil() {
-        this._coords = this._coords.map((c) => Math.ceil(c));
+		this._coords = this._coords.map(c => Math.ceil(c));
 
 		return this;
 	}
@@ -263,7 +271,7 @@ export class VecN {
 	 * @returns VecN
 	 */
 	floor() {
-        this._coords = this._coords.map((c) => Math.floor(c));
+		this._coords = this._coords.map(c => Math.floor(c));
 
 		return this;
 	}
@@ -275,15 +283,15 @@ export class VecN {
 	 * @returns VecN
 	 */
 	round() {
-        this._coords = this._coords.map((c) => Math.round(c));
+		this._coords = this._coords.map(c => Math.round(c));
 
 		return this;
 	}
 
 	/**
-	 * 
+	 *
 	 * Clamp coordinates between two vectors, min and max.
-	 * 
+	 *
 	 * @param min minimum vector
 	 * @param max maximum vector
 	 * @returns VecN
@@ -294,7 +302,9 @@ export class VecN {
 
 		// assumes min < max, componentwise
 
-        this._coords = this._coords.map((c, i) => Math.max(min[i], Math.min(max[i], c)));
+		this._coords = this._coords.map((c, i) =>
+			Math.max(min[i], Math.min(max[i], c))
+		);
 
 		return this;
 	}
@@ -302,7 +312,7 @@ export class VecN {
 	/**
 	 * Segment vector between two points.
 	 * From A to B
-	 * 
+	 *
 	 * @param A First Point
 	 * @param B Second Point
 	 * @returns VecN
@@ -311,7 +321,7 @@ export class VecN {
 		A = this._vectorize(A);
 		B = this._vectorize(B);
 
-        this._coords = this._coords.map((c, i) => B[i] - A[i]);
+		this._coords = this._coords.map((c, i) => B[i] - A[i]);
 
 		return this;
 	}
@@ -326,7 +336,7 @@ export class VecN {
 	add(v: VectorNLike) {
 		v = this._vectorize(v);
 
-        this._coords = this._coords.map((c, i) => c + v[i]);
+		this._coords = this._coords.map((c, i) => c + v[i]);
 
 		return this;
 	}
@@ -341,7 +351,7 @@ export class VecN {
 	sub(v: VectorNLike) {
 		v = this._vectorize(v);
 
-        this._coords = this._coords.map((c, i) => c - v[i]);
+		this._coords = this._coords.map((c, i) => c - v[i]);
 
 		return this;
 	}
@@ -354,7 +364,7 @@ export class VecN {
 	 * @returns VecN
 	 */
 	multiply(s: number) {
-        this._coords = this._coords.map((c) => c * s);
+		this._coords = this._coords.map(c => c * s);
 
 		return this;
 	}
@@ -367,18 +377,16 @@ export class VecN {
 	 * @returns VecN
 	 */
 	divide(s: number) {
-        this._coords = this._coords.map((c) => c / s);
+		this._coords = this._coords.map(c => c / s);
 
 		return this;
 	}
-	
-	*[ Symbol.iterator ]() {
 
+	*[Symbol.iterator]() {
 		yield Array.from(this._coords);
-
 	}
 
-	*[ Symbol.length ]() {
+	*[Symbol.length]() {
 		yield this.dimensions;
 	}
 }
