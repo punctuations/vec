@@ -5,9 +5,11 @@ export type Vector = Float32Array | Float64Array;
 export type Vector3Like =
 	| Vector
 	| [number, number, number]
-	| {x: number; y: number; z: number}
-	| {i: number; j: number; k: number};
-export type Camera = { x: number, y: number, z: number } | { i: number; j: number; k: number } // | * add threejs camera
+	| { x: number; y: number; z: number }
+	| { i: number; j: number; k: number };
+export type Camera =
+	| { x: number; y: number; z: number }
+	| { i: number; j: number; k: number }; // | * add threejs camera
 
 type Axis = 'x' | 'y' | 'z' | 'i' | 'j' | 'k';
 
@@ -23,6 +25,10 @@ export class Vec3 {
 	private _z: number;
 
 	private _mag: number = 0;
+
+	readonly length: number = 3;
+	readonly dimensions: number = 3;
+	readonly isVector3: boolean = true;
 
 	constructor();
 	constructor(x: number, y: number, z: number);
@@ -53,9 +59,6 @@ export class Vec3 {
 		}
 
 		this._mag = this._calculateMagnitude();
-
-		Vec3.prototype.dimensions, Vec3.prototype.length = 3;
-		Vec3.prototype.isVector3 = true;
 	}
 
 	private static isVec3Coords(obj: any): obj is Vec3Coords {
@@ -86,7 +89,7 @@ export class Vec3 {
 			if (v.length == 3) {
 				return v;
 			} else {
-				throw new Error('Unable to vectorize input: exceeded vector length.')
+				throw new Error('Unable to vectorize input: exceeded vector length.');
 			}
 		}
 	}
@@ -148,7 +151,7 @@ export class Vec3 {
 	}
 
 	// https://stackoverflow.com/questions/16451723/get-coordinates-of-a-point-in-3d-space-from-angles-its-vector-makes-with-axis-an
-	set mag(value: {magnitude: number; theta?: number; phi?: number}) {
+	set mag(value: { magnitude: number; theta?: number; phi?: number }) {
 		value.theta = value.theta ?? 0;
 		value.phi = value.phi ?? 0;
 
@@ -211,7 +214,7 @@ export class Vec3 {
 	 * @returns Vec3
 	 */
 	unit() {
-		this._x, this._y, this._z = (1 / Math.sqrt(3));
+		this._x, this._y, (this._z = 1 / Math.sqrt(3));
 
 		return this;
 	}
@@ -233,7 +236,7 @@ export class Vec3 {
 	/**
 	 *
 	 * Reverse the direction of all axis, such that it is anti-parallel
-	 * (alias function for {@link antiparalell})
+	 * @see (alias function for {@link antiparalell})
 	 *
 	 * @returns Vec3
 	 */
@@ -277,25 +280,50 @@ export class Vec3 {
 		return v2;
 	}
 
+	/**
+	 *
+	 * Returns outer product (direct product) of two vectors.
+	 *
+	 * @param v1 Vector
+	 * @returns new Matrix
+	 */
 	outer(v1: Vector3Like): Matrix {
 		v1 = this._vectorize(v1);
 
-		return new Matrix([[0, -1], [1, 0]])
-
-		// TODO: RETURN MATRIX @see https://i.stack.imgur.com/80AA9.jpg
+		return new Matrix([
+			[this._x * v1[0], this._x * v1[1], this._x * v1[2]],
+			[this._y * v1[0], this._y * v1[1], this._y * v1[2]],
+			[this._z * v1[0], this._z * v1[1], this._z * v1[2]],
+		]);
 	}
 
 	/**
-	 * 
+	 *
+	 * Returns outer product (direct product) of two vectors.
+	 * @see (alias function for {@link outer})
+	 *
+	 * @param v1 Vector
+	 * @returns new Matrix
+	 */
+	direct(v1: Vector3Like): Matrix {
+		return this.outer(v1);
+	}
+
+	/**
+	 *
 	 * Find the distance between two vectors.
-	 * 
+	 *
 	 * @param v1 Vector
 	 * @return distance
 	 */
 	distance(v1: Vector3Like): number {
 		v1 = this._vectorize(v1);
 
-		return Math.hypot((this._x**2 - v1[0]**2), (this._y**2 - v1[1]**2), (this._z**2 - v1[2]**2))
+		return Math.hypot(
+			this._x ** 2 - v1[0] ** 2,
+			this._y ** 2 - v1[1] ** 2,
+			this._z ** 2 - v1[2] ** 2
+		);
 	}
 
 	/**
@@ -309,14 +337,28 @@ export class Vec3 {
 	 *
 	 * @see https://en.wikipedia.org/wiki/Spherical_coordinate_system
 	 */
-	from(angle: [number, number] | [number] | number, phi?: number, unit: 'deg' | 'rad' = 'rad') {
+	from(
+		angle: [number, number] | [number] | number,
+		phi?: number,
+		unit: 'deg' | 'rad' = 'rad'
+	) {
 		let theta;
 
 		if (Array.isArray(angle)) {
-			theta = angle.length > 0 ? unit.toLowerCase() == 'deg' ? angle[0] * Math.PI/180 : angle[0] : Math.atan2(this._y, this._x);
-			phi = angle.length == 2 ? unit.toLowerCase() == 'deg' ? angle[0] * Math.PI/180 : angle[1] : Math.acos(this._z / this._mag);
+			theta =
+				angle.length > 0
+					? unit.toLowerCase() == 'deg'
+						? (angle[0] * Math.PI) / 180
+						: angle[0]
+					: Math.atan2(this._y, this._x);
+			phi =
+				angle.length == 2
+					? unit.toLowerCase() == 'deg'
+						? (angle[0] * Math.PI) / 180
+						: angle[1]
+					: Math.acos(this._z / this._mag);
 		} else {
-			theta = unit.toLowerCase() == 'deg' ? angle * Math.PI/180 : angle;
+			theta = unit.toLowerCase() == 'deg' ? (angle * Math.PI) / 180 : angle;
 			phi = phi ?? Math.acos(this._z / this._mag);
 		}
 
@@ -383,13 +425,16 @@ export class Vec3 {
 			
 			*/
 			switch (a) {
-				case 'x' || 'i':
+				case 'x':
+				case 'i':
 					theta = Math.acos(this._x / this._mag);
 					break;
-				case 'y' || 'j':
+				case 'y':
+				case 'j':
 					theta = Math.acos(this._y / this._mag);
 					break;
-				case 'z' || 'k':
+				case 'z':
+				case 'k':
 					theta = Math.acos(this._z / this._mag);
 					break;
 			}
@@ -419,7 +464,7 @@ export class Vec3 {
 	/**
 	 * Segment vector between two points.
 	 * From A to B
-	 * 
+	 *
 	 * @param A First Point
 	 * @param B Second Point
 	 * @returns Vec2
@@ -512,9 +557,9 @@ export class Vec3 {
 	}
 
 	/**
-	 * 
+	 *
 	 * Clamp coordinates between two vectors, min and max.
-	 * 
+	 *
 	 * @param min minimum vector
 	 * @param max maximum vector
 	 * @returns Vec3
@@ -605,34 +650,51 @@ export class Vec3 {
 	 * @returns new Vec2
 	 * @see https://blog.mattt.space/p/vec-projection
 	 */
-	project(coords: Axis | Camera, angle?: {alpha: number, beta: number}, unit: "deg" | "rad" = "rad") {
+	project(
+		coords: Axis | Camera,
+		angle?: { alpha: number; beta: number },
+		unit: 'deg' | 'rad' = 'rad'
+	) {
 		/* Projection coordinates */
 		let px;
 		let py;
 
-		if (coords == 'x' || coords == 'y' || coords == 'z' || coords == 'i' || coords == 'j' || coords == 'k') {
+		if (
+			coords == 'x' ||
+			coords == 'y' ||
+			coords == 'z' ||
+			coords == 'i' ||
+			coords == 'j' ||
+			coords == 'k'
+		) {
 			switch (coords) {
-				case 'x' || 'i':
+				case 'x':
+				case 'i':
 					px = this._x;
 					py = this._z;
 					break;
-				case 'y' || 'j':
+				case 'y':
+				case 'j':
 					px = this._y;
 					py = this._z;
 					break;
-				case 'z' || 'k':
+				case 'z':
+				case 'k':
 					px = this._x;
 					py = this._y;
 					break;
 				default:
-					throw new Error("Invalid dimensions for projection.");
+					throw new Error('Invalid dimensions for projection.');
 			}
 		} else {
 			// camera object
 			let unitConversion = unit.toLowerCase() == 'deg' ? Math.PI / 180 : 1;
 
-			angle = { alpha: unitConversion * (angle?.alpha ?? 0), beta: unitConversion  * (angle?.beta ?? 0) };
-			
+			angle = {
+				alpha: unitConversion * (angle?.alpha ?? 0),
+				beta: unitConversion * (angle?.beta ?? 0),
+			};
+
 			let v = this._vectorize(coords);
 
 			/* Camera coordinates */
@@ -642,12 +704,13 @@ export class Vec3 {
 
 			let d = Math.hypot(cx - v[0], cy - v[1], cz - v[2]);
 
-
 			/* convert to spherical for yaw and pitch */
 			let r = Math.hypot(cx, cy, cz);
-			let theta = Math.atan2(cy, cx) + angle.alpha;			
-			let phi = Math.acos(cz / Math.hypot(cx, cy, cz)) + angle.beta; /* can use atan(√(x²+y²)/z) as well, but less calculations required this way */
-			
+			let theta = Math.atan2(cy, cx) + angle.alpha;
+			let phi =
+				Math.acos(cz / Math.hypot(cx, cy, cz)) +
+				angle.beta; /* can use atan(√(x²+y²)/z) as well, but less calculations required this way */
+
 			/* 
 				c vector coordinates, this is the normal vector.
 				
@@ -662,7 +725,8 @@ export class Vec3 {
 
 				proj_c(v) = [(v dot c)/(c dot c)] * c
 			*/
-			let projcVScalar = (v[0] * cx + v[1] * cy + v[2] * cz) / (cx ** 2 + cy ** 2 + cz ** 2);
+			let projcVScalar =
+				(v[0] * cx + v[1] * cy + v[2] * cz) / (cx ** 2 + cy ** 2 + cz ** 2);
 
 			/* projection c unto v coordinates; c projection */
 			let cpx = projcVScalar * cx;
@@ -674,11 +738,10 @@ export class Vec3 {
 					+ scale factor, accounting for distance of camera
 					see: 
 			*/
-			px = d ? (v[0] - cpx)/d : 0;
-			py = d ? (v[1] - cpy)/d : 0;
+			px = d ? (v[0] - cpx) / d : 0;
+			py = d ? (v[1] - cpy) / d : 0;
 			// pz = v[2] - cpz (this does not need to be added as it will sum to zero)
 		}
-		
 
 		return new Vec2(px, py);
 	}
@@ -699,23 +762,21 @@ export class Vec3 {
 		return new Vec2(tx, ty);
 	}
 
-	*[ Symbol.iterator ]() {
-
+	*[Symbol.iterator]() {
 		yield this._x;
 		yield this._y;
 		yield this._z;
-
 	}
 
-	*[ Symbol.length ]() {
+	*[Symbol.length]() {
 		yield this.dimensions;
 	}
 }
 
 export interface Vec3 {
-	dimensions: number;
-	length: number;
-	isVector3: boolean;
+	readonly dimensions: number;
+	readonly length: number;
+	readonly isVector3: boolean;
 	three: {
 		set(x: number, y: number, z: number): Vec3;
 		setX(x: number): Vec3;

@@ -10,5 +10,5 @@
 			"exclude": ["prefer-const", "no-explicit-any"]
 		}
 	},
-	"exclude": ["dist/", "test.ts"]
+	"exclude": ["dist/", "example.ts"]
 }

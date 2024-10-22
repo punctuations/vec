@@ -1,4 +1,4 @@
-import { Vec3, Vector } from "../3D/index.ts";
+import { Vec3, Vector } from '../3D/index.ts';
 
 export type Vector2Like = Vector | [number, number] | { x: number; y: number };
 
@@ -305,10 +305,12 @@ export class Vec2 {
 
 		if (a == 'x' || a == 'y' || a == 'i' || a == 'j') {
 			switch (a) {
-				case 'x' || 'i':
+				case 'x':
+				case 'i':
 					theta = Math.acos(this._x / this._mag);
 					break;
-				case 'y' || 'j':
+				case 'y':
+				case 'j':
 					theta = Math.acos(this._y / this._mag);
 					break;
 			}
