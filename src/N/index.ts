@@ -8,15 +8,32 @@ export class VecN {
 
 	private _mag: number = 0;
 
+	readonly dimensions: number;
+	readonly length: number;
+	readonly isVectorN: boolean = true;
+
 	constructor();
 	constructor(v: VectorNLike);
 	constructor(v?: VectorNLike) {
 		if (v === undefined) {
 			this._coords = new Float64Array([0, 0, 0, 0]);
-		} else if (v instanceof Vec2 || v instanceof Vec3) {
-			VecN.prototype.dimensions = v?.length || 0;
+		} else if (typeof v == 'object' && ('x' in v || 'i' in v)) {
+			if ('z' in v) {
+				// 3D x, y, z logic
+				this.dimensions = 3;
 
-			v = this._vectorize([...v]);
+				v = this._vectorize([v.x, v.y, v.z]);
+			} else if ('k' in v) {
+				// 3D i, j, k logic
+				this.dimensions = 3;
+
+				v = this._vectorize([v.i, v.j, v.k]);
+			} else {
+				// 2D x, y logic
+				this.dimensions = 2;
+
+				v = this._vectorize([v.x, v.y]);
+			}
 
 			this._coords = new Float64Array(v);
 		} else if (
@@ -24,18 +41,19 @@ export class VecN {
 			v instanceof Float32Array ||
 			v instanceof Float64Array
 		) {
-			VecN.prototype.dimensions = v?.length || 0;
+			this.dimensions = v?.length || 0;
 
 			v = this._vectorize(v);
 
 			this._coords = new Float64Array(v);
 		} else {
-			throw new Error('Invalid arguments provided for Vec2 constructor');
+			throw new Error('Invalid arguments provided for VecN constructor');
 		}
 
 		this._mag = this._calculateMagnitude();
 
-		VecN.prototype.dimensions = v?.length || 0;
+		this.dimensions = v?.length || 0;
+		this.length = this.dimensions;
 	}
 
 	private _calculateMagnitude(): number {
@@ -385,16 +403,12 @@ export class VecN {
 	*[Symbol.iterator]() {
 		yield Array.from(this._coords);
 	}
-
-	*[Symbol.length]() {
-		yield this.dimensions;
-	}
 }
 
 export interface VecN {
-	dimensions: number;
-	length: number;
-	isVectorN: boolean;
+	readonly dimensions: number;
+	readonly length: number;
+	readonly isVectorN: boolean;
 
 	/**
 	 * Iterating through a Vector2 instance will yield its components (x, y) in the corresponding order.

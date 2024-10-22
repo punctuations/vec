@@ -6,6 +6,10 @@ export type Vector1Like = Vector | [number] | number;
 export class Vec1 {
 	private _coord: number;
 
+	readonly dimensions: number = 1;
+	readonly length: number = 1;
+	readonly isVector1: boolean = true;
+
 	constructor(v: Vector1Like) {
 		if (
 			Array.isArray(v) ||
@@ -16,9 +20,6 @@ export class Vec1 {
 		} else {
 			this._coord = v;
 		}
-
-		Vec1.prototype.dimensions, (Vec1.prototype.length = 2);
-		Vec1.prototype.isVector1 = true;
 	}
 
 	private _vectorize(v: Vector1Like): number {
@@ -274,9 +275,9 @@ export class Vec1 {
 }
 
 export interface Vec1 {
-	dimensions: number;
-	length: number;
-	isVector1: boolean;
+	readonly dimensions: number;
+	readonly length: number;
+	readonly isVector1: boolean;
 
 	/**
 	 * Iterating through a Vector1 instance will yield its single component.

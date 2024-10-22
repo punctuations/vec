@@ -26,6 +26,10 @@ export class Vec3 {
 
 	private _mag: number = 0;
 
+	readonly length: number = 3;
+	readonly dimensions: number = 3;
+	readonly isVector3: boolean = true;
+
 	constructor();
 	constructor(x: number, y: number, z: number);
 	constructor(v: Vector3Like);
@@ -55,9 +59,6 @@ export class Vec3 {
 		}
 
 		this._mag = this._calculateMagnitude();
-
-		Vec3.prototype.dimensions, (Vec3.prototype.length = 3);
-		Vec3.prototype.isVector3 = true;
 	}
 
 	private static isVec3Coords(obj: any): obj is Vec3Coords {
@@ -767,16 +768,12 @@ export class Vec3 {
 		yield this._y;
 		yield this._z;
 	}
-
-	*[Symbol.length]() {
-		yield this.dimensions;
-	}
 }
 
 export interface Vec3 {
-	dimensions: number;
-	length: number;
-	isVector3: boolean;
+	readonly dimensions: number;
+	readonly length: number;
+	readonly isVector3: boolean;
 	three: {
 		set(x: number, y: number, z: number): Vec3;
 		setX(x: number): Vec3;

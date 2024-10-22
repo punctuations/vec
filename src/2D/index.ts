@@ -15,6 +15,10 @@ export class Vec2 {
 
 	private _mag: number = 0;
 
+	readonly length: number = 2;
+	readonly dimensions: number = 2;
+	readonly isVector2: boolean = true;
+
 	constructor();
 	constructor(x: number, y: number);
 	constructor(v: Vector2Like);
@@ -41,8 +45,6 @@ export class Vec2 {
 		}
 
 		this._mag = this._calculateMagnitude();
-
-		Vec2.prototype.dimensions, (Vec2.prototype.length = 2);
 	}
 
 	private static isVec2Coords(obj: any): obj is Vec2Coords {
@@ -516,16 +518,12 @@ export class Vec2 {
 		yield this._x;
 		yield this._y;
 	}
-
-	*[Symbol.length]() {
-		yield this.dimensions;
-	}
 }
 
 export interface Vec2 {
-	dimensions: number;
-	length: number;
-	isVector2: boolean;
+	readonly dimensions: number;
+	readonly length: number;
+	readonly isVector2: boolean;
 	three: {
 		set(x: number, y: number): Vec2;
 		setX(x: number): Vec2;
