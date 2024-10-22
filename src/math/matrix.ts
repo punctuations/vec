@@ -7,12 +7,12 @@ export class Matrix {
 	private _matrix: MatrixLike = [];
 	private _isSquare: boolean = false;
 
-	constructor(matrix: MatrixLike | number) {
-		// allow to just specify square dimensions
+    constructor(matrix: MatrixLike | number) {
+        // allow to just specify square dimensions
 		if (typeof matrix === 'number') {
 			this._rows = matrix;
-			this._cols = matrix;
-			this._isSquare = true;
+            this._cols = matrix;
+            this._isSquare = true;
 
 			this._setScalar(matrix);
 		} else {
@@ -35,8 +35,7 @@ export class Matrix {
 			}
 		}
 
-		Matrix.prototype.dimensions,
-			(Matrix.prototype.length = [this._rows, this._cols]);
+		Matrix.prototype.dimensions, Matrix.prototype.length = [this._rows, this._cols];
 	}
 
 	private _set(m: Matrix | MatrixLike) {
@@ -146,16 +145,16 @@ export class Matrix {
 	}
 
 	/**
-	 *
+	 * 
 	 * Reduce matrix to row echelon form.
-	 *
+	 * 
 	 * @param m matrix
-	 *
+	 * 
 	 * @returns Matrix
 	 */
 	rref(m: MatrixLike): Matrix {
 		// https://en.wikipedia.org/wiki/Row_echelon_form
-
+	
 		// untested!
 		let lead = 0;
 		for (let r = 0; r < this._rows; r++) {
@@ -190,7 +189,8 @@ export class Matrix {
 			}
 			lead++;
 		}
-
+	
+	
 		return new Matrix(m);
 	}
 
@@ -231,9 +231,10 @@ export class Matrix {
 	// will have height of m1 and width of m2
 	// https://en.wikipedia.org/wiki/Matrix_multiplication
 	multiply(m1: MatrixLike | Matrix): Matrix {
+		
 		if (m1 instanceof Matrix) {
 			m1 = m1._matrix;
-		}
+		};
 
 		// new matrix dimensions: m1.rows x m2.cols
 		for (let i = 0; i < this._rows; i++) {
@@ -275,8 +276,10 @@ export class Matrix {
 
 	// not sure what the iterable should be yet **
 	*[Symbol.iterator]() {
+
 		yield this._rows;
 		yield this._cols;
+		
 	}
 }
 

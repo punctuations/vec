@@ -1,7 +1,7 @@
-import { Vector2Like } from '../2D';
-import { Vector3Like } from '../3D';
-import { VecN, VectorNLike } from '../N';
-import { _vectorizeLike } from './util';
+import { Vector2Like } from "../2D/index.ts";
+import { Vector3Like } from "../3D/index.ts";
+import { VecN, VectorNLike } from "../N/index.ts";
+import { _vectorizeLike } from "./util.ts";
 
 export const vec = (domain?: [number, number], range?: [number, number]) => {
 	domain = domain || [2, 3];
