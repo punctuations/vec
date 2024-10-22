@@ -94,7 +94,6 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 	};
 };
 
-// TODO(@punctuations): Implement normalization for vectors
 function _normalize(vec: VectorNLike | VecN): number[] {
 	if (!(vec instanceof VecN)) vec = _vectorizeLike(vec);
 	if (vec instanceof VecN) vec = vec.coords;
