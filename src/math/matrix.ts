@@ -7,12 +7,12 @@ export class Matrix {
 	private _matrix: MatrixLike = [];
 	private _isSquare: boolean = false;
 
-    constructor(matrix: MatrixLike | number) {
-        // allow to just specify square dimensions
+	constructor(matrix: MatrixLike | number) {
+		// allow to just specify square dimensions
 		if (typeof matrix === 'number') {
 			this._rows = matrix;
-            this._cols = matrix;
-            this._isSquare = true;
+			this._cols = matrix;
+			this._isSquare = true;
 
 			this._setScalar(matrix);
 		} else {
@@ -35,7 +35,8 @@ export class Matrix {
 			}
 		}
 
-		Matrix.prototype.dimensions, Matrix.prototype.length = [this._rows, this._cols];
+		Matrix.prototype.dimensions,
+			(Matrix.prototype.length = [this._rows, this._cols]);
 	}
 
 	private _set(m: Matrix | MatrixLike) {
@@ -58,6 +59,11 @@ export class Matrix {
 				this._matrix[i][j] = c;
 			}
 		}
+	}
+
+	private _determinant(m: MatrixLike): number {
+		// TODO(@punctuations): implement matrix determinant
+		return m[0][0];
 	}
 
 	get rows() {
@@ -145,16 +151,16 @@ export class Matrix {
 	}
 
 	/**
-	 * 
+	 *
 	 * Reduce matrix to row echelon form.
-	 * 
+	 *
 	 * @param m matrix
-	 * 
+	 *
 	 * @returns Matrix
 	 */
 	rref(m: MatrixLike): Matrix {
 		// https://en.wikipedia.org/wiki/Row_echelon_form
-	
+
 		// untested!
 		let lead = 0;
 		for (let r = 0; r < this._rows; r++) {
@@ -189,9 +195,22 @@ export class Matrix {
 			}
 			lead++;
 		}
-	
-	
+
 		return new Matrix(m);
+	}
+
+	/**
+	 *
+	 * Compute the determinant of a square matrix.
+	 *
+	 * @returns number
+	 */
+	determinant(): number {
+		if (!this._isSquare) {
+			throw new Error('Matrix must be square');
+		}
+
+		return this._determinant(this._matrix);
 	}
 
 	// either return NEW matrix __OR__ change current matrix value
@@ -231,10 +250,9 @@ export class Matrix {
 	// will have height of m1 and width of m2
 	// https://en.wikipedia.org/wiki/Matrix_multiplication
 	multiply(m1: MatrixLike | Matrix): Matrix {
-		
 		if (m1 instanceof Matrix) {
 			m1 = m1._matrix;
-		};
+		}
 
 		// new matrix dimensions: m1.rows x m2.cols
 		for (let i = 0; i < this._rows; i++) {
@@ -251,7 +269,24 @@ export class Matrix {
 	}
 
 	// create alias of 'div'
-	divide(m1: MatrixLike) {}
+	divide(m1: MatrixLike) {
+		if (m1 instanceof Matrix) {
+			m1 = m1._matrix;
+		}
+
+		// new matrix dimensions: m1.rows / m2.cols
+		for (let i = 0; i < this._rows; i++) {
+			for (let j = 0; j < m1[0].length; j++) {
+				m1[i][j] = this._matrix[i][j] / m1[i][j];
+			}
+		}
+
+		this.dimensions = [this._rows, m1[0].length];
+		this._cols = m1[0].length;
+
+		this._set(m1);
+		return this;
+	}
 
 	power_of(n: number): Matrix {
 		// compute matrix multiplication n times
@@ -266,20 +301,20 @@ export class Matrix {
 
 	// new Matrix([[0, 1], [-1, 0]]).pow(2) => 2^(A), where A is the matrix
 	pow(base: number): number {
-		return 0;
+		// TODO(@punctuations): implement matrix exponentiation
+		return base;
 	}
 
 	// e^[[1,0],[0,1]] || e^(A)
 	exp(): number {
+		// TODO(@punctuations): implement e^(A) exponentiation
 		return 0;
 	}
 
 	// not sure what the iterable should be yet **
 	*[Symbol.iterator]() {
-
 		yield this._rows;
 		yield this._cols;
-		
 	}
 }
 
@@ -287,7 +322,15 @@ export interface Matrix {
 	dimensions: number[];
 	length: number[];
 	three: {
-		// Add more methods here if needed
+		//TODO(@punctuations): add backwards compat. + implement methods
+		makeOrthographic(
+			left: number,
+			right: number,
+			top: number,
+			bottom: number,
+			near: number,
+			far: number
+		): Matrix;
 	};
 
 	/**

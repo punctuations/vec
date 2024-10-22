@@ -1,5 +1,5 @@
 import { Vec2 } from '../2D/index.ts';
-import { Matrix, MatrixLike } from '../math/matrix.ts';
+import { Matrix } from '../math/matrix.ts';
 
 export type Vector = Float32Array | Float64Array;
 export type Vector3Like =

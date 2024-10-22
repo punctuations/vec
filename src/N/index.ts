@@ -1,5 +1,5 @@
-import {Vec2, Vector2Like} from '../2D/index.ts';
-import {Vec3, Vector, Vector3Like} from '../3D/index.ts';
+import { Vector2Like } from '../2D/index.ts';
+import { Vector, Vector3Like } from '../3D/index.ts';
 
 export type VectorNLike = Vector | Vector2Like | Vector3Like | number[];
 
@@ -339,7 +339,7 @@ export class VecN {
 		A = this._vectorize(A);
 		B = this._vectorize(B);
 
-		this._coords = this._coords.map((c, i) => B[i] - A[i]);
+		this._coords = this._coords.map((_c, i) => B[i] - A[i]);
 
 		return this;
 	}
@@ -411,7 +411,7 @@ export interface VecN {
 	readonly isVectorN: boolean;
 
 	/**
-	 * Iterating through a Vector2 instance will yield its components (x, y) in the corresponding order.
+	 * Iterating through a VectorN instance will yield its components (x, y, ...) in the corresponding order.
 	 */
 	[Symbol.iterator](): Iterator<number[]>;
 }

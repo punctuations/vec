@@ -2,6 +2,14 @@
 	"compilerOptions": {
 		"strict": true
 	},
+	"fmt": {
+		"lineWidth": 80,
+		"indentWidth": 4,
+		"useTabs": true,
+		"singleQuote": true,
+		"semiColons": true,
+		"bracketSpacing": true
+	},
 	"lint": {
 		"include": ["src/"],
 		"rules": {
