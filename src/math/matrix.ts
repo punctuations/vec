@@ -16,8 +16,11 @@ export class Matrix {
 
 			this._setScalar(matrix);
 		} else {
-			if (matrix.length === 0 || matrix[0].length === 0)
-				throw new Error('Invalid matrix: must have at least one element.');
+			if (matrix.length === 0 || matrix[0].length === 0) {
+				throw new Error(
+					'Invalid matrix: must have at least one element.',
+				);
+			}
 
 			this._matrix = matrix;
 			this._rows = matrix.length;
@@ -27,7 +30,7 @@ export class Matrix {
 			if (
 				!matrix.every(
 					(row: number[] | Float32Array | Float64Array) =>
-						row.length === this._cols
+						row.length === this._cols,
 				)
 			) {
 				// matrix is square (2x2, 3x3, 4x4)
@@ -71,10 +74,11 @@ export class Matrix {
 	}
 
 	set rows(rows: number) {
-		if (rows! >= 1)
+		if (rows! >= 1) {
 			throw new Error(
-				`Matrix cannot have dimension of ${rows}, rows must be >= 1`
+				`Matrix cannot have dimension of ${rows}, rows must be >= 1`,
 			);
+		}
 
 		this._rows = rows;
 
@@ -94,10 +98,11 @@ export class Matrix {
 	}
 
 	set cols(cols: number) {
-		if (cols! >= 1)
+		if (cols! >= 1) {
 			throw new Error(
-				`Matrix cannot have dimension of ${cols}, rows must be >= 1`
+				`Matrix cannot have dimension of ${cols}, rows must be >= 1`,
 			);
+		}
 
 		this._cols = cols;
 
@@ -112,7 +117,6 @@ export class Matrix {
 	}
 
 	/**
-	 *
 	 * Clone this matrix into a new vector.
 	 *
 	 * @returns new Matrix
@@ -122,7 +126,6 @@ export class Matrix {
 	}
 
 	/**
-	 *
 	 * Create a zero matrix.
 	 *
 	 * @returns Matrix
@@ -132,7 +135,6 @@ export class Matrix {
 	}
 
 	/**
-	 *
 	 * Creates an identity matrix.
 	 *
 	 * @returns Matrix
@@ -151,7 +153,6 @@ export class Matrix {
 	}
 
 	/**
-	 *
 	 * Reduce matrix to row echelon form.
 	 *
 	 * @param m matrix
@@ -200,7 +201,6 @@ export class Matrix {
 	}
 
 	/**
-	 *
 	 * Compute the determinant of a square matrix.
 	 *
 	 * @returns number
@@ -329,7 +329,7 @@ export interface Matrix {
 			top: number,
 			bottom: number,
 			near: number,
-			far: number
+			far: number,
 		): Matrix;
 	};
 

@@ -67,7 +67,9 @@ export class Vec2 {
 			if (v.length == 2) {
 				return v;
 			} else {
-				throw new Error('Unable to vectorize input: exceeded vector length.');
+				throw new Error(
+					'Unable to vectorize input: exceeded vector length.',
+				);
 			}
 		}
 	}
@@ -114,7 +116,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Clone this vector into a new vector.
 	 *
 	 * @returns new Vec2
@@ -124,7 +125,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Copy the information of another vector to this vector.
 	 *
 	 * @param v Vector
@@ -140,7 +140,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Zero all coordinates: [0, 0]
 	 *
 	 * @returns Vec2
@@ -153,7 +152,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Normalize to a unit vector.
 	 *
 	 * @returns Vec2
@@ -165,7 +163,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Reverse the direction of all axis, such that it is anti-parallel
 	 *
 	 * @returns Vec2
@@ -178,7 +175,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Reverse the direction of all axis, such that it is anti-parallel
 	 * (alias function for {@link antiparalell})
 	 *
@@ -189,7 +185,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Performs the dot product against v0 and v1. (v0 ・ v1)
 	 *
 	 * @param v1 Vector
@@ -205,7 +200,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Calculate the 2D determinate.
 	 *
 	 * @param v1 Vector
@@ -219,7 +213,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Calculate the wedge product for two vectors
 	 *
 	 * @param v1 Vector
@@ -232,7 +225,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Find the distance between two vectors.
 	 *
 	 * @param v1 Vector
@@ -245,7 +237,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Transform the vector such that θ is satisfied, while sustaining the magnitude.
 	 *
 	 * @param theta angle
@@ -264,7 +255,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Rotate the vector by an angle, θ
 	 *
 	 * @param theta angle of translation
@@ -289,7 +279,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Get the angle or angles between a positive axis or a vector
 	 *
 	 * @param a Vector or axis
@@ -300,8 +289,9 @@ export class Vec2 {
 		let theta = 0;
 
 		// !0 => true, ![>0] => false
-		if (!this._mag)
+		if (!this._mag) {
 			throw new Error('This vector cannot have magnitude of zero');
+		}
 
 		if (a == 'x' || a == 'y' || a == 'i' || a == 'j') {
 			switch (a) {
@@ -318,14 +308,15 @@ export class Vec2 {
 			a = this._vectorize(a);
 
 			// !0 => true, ![>0] => false
-			if (!a[0] || !a[1])
+			if (!a[0] || !a[1]) {
 				throw new Error('Vector cannot have magnitude of zero');
+			}
 
 			/*
-			
+
 				since,
 					cosθ = (v・v1)/(||v|| * ||v1||)
-			
+
 			*/
 			theta = Math.acos(this.dot(a) / (Math.hypot(...a) * this._mag));
 		}
@@ -338,7 +329,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Max between two vectors
 	 *
 	 * @param v1 Vector
@@ -354,7 +344,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Min between two vectors
 	 *
 	 * @param v1 Vector
@@ -370,7 +359,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Round all coords up
 	 *
 	 * @returns Vec2
@@ -383,7 +371,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Round all coords down
 	 *
 	 * @returns Vec2
@@ -396,7 +383,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Round all coords
 	 *
 	 * @returns Vec2
@@ -409,7 +395,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Clamp coordinates between two vectors, min and max.
 	 *
 	 * @param min minimum vector
@@ -447,7 +432,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Add together two vectors, vector sum is this vector.
 	 *
 	 * @param v Vector
@@ -463,7 +447,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Subtract two vectors, vector sum is this vector.
 	 *
 	 * @param v Vector
@@ -479,7 +462,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Multiply this vector by a scalar, `s`.
 	 *
 	 * @param s Scalar
@@ -493,7 +475,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Divide this vector by a scalar, `s`.
 	 *
 	 * @param s Scalar
@@ -507,7 +488,6 @@ export class Vec2 {
 	}
 
 	/**
-	 *
 	 * Extend a 2D vector into a 3D space.
 	 *
 	 * @returns Vec3

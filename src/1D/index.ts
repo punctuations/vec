@@ -33,7 +33,9 @@ export class Vec1 {
 			if (v.length == 1) {
 				return v[0];
 			} else {
-				throw new Error('Unable to vectorize input: exceeded vector length.');
+				throw new Error(
+					'Unable to vectorize input: exceeded vector length.',
+				);
 			}
 		}
 	}
@@ -47,7 +49,6 @@ export class Vec1 {
 	}
 
 	/**
-	 *
 	 * Clone this vector into a new vector.
 	 *
 	 * @returns new Vec1
@@ -57,7 +58,6 @@ export class Vec1 {
 	}
 
 	/**
-	 *
 	 * Copy the information of another vector to this vector.
 	 *
 	 * @param v Vector
@@ -72,7 +72,6 @@ export class Vec1 {
 	}
 
 	/**
-	 *
 	 * Zero all coordinates: [0]
 	 *
 	 * @returns Vec1
@@ -84,7 +83,6 @@ export class Vec1 {
 	}
 
 	/**
-	 *
 	 * Normalize to a unit vector.
 	 *
 	 * @returns Vec1
@@ -96,7 +94,6 @@ export class Vec1 {
 	}
 
 	/**
-	 *
 	 * Reverse the direction of all axis, such that it is anti-parallel
 	 *
 	 * @returns Vec1
@@ -108,7 +105,6 @@ export class Vec1 {
 	}
 
 	/**
-	 *
 	 * Reverse the direction of all axis, such that it is anti-parallel
 	 * (alias function for {@link antiparallel})
 	 *
@@ -119,7 +115,6 @@ export class Vec1 {
 	}
 
 	/**
-	 *
 	 * Max between two vectors
 	 *
 	 * @param v1 Vector
@@ -134,7 +129,6 @@ export class Vec1 {
 	}
 
 	/**
-	 *
 	 * Min between two vectors
 	 *
 	 * @param v1 Vector
@@ -149,7 +143,6 @@ export class Vec1 {
 	}
 
 	/**
-	 *
 	 * Round all coords up
 	 *
 	 * @returns Vec1
@@ -161,7 +154,6 @@ export class Vec1 {
 	}
 
 	/**
-	 *
 	 * Round all coords down
 	 *
 	 * @returns Vec1
@@ -173,7 +165,6 @@ export class Vec1 {
 	}
 
 	/**
-	 *
 	 * Round all coords
 	 *
 	 * @returns Vec1
@@ -185,7 +176,6 @@ export class Vec1 {
 	}
 
 	/**
-	 *
 	 * Clamp coordinates between two vectors, min and max.
 	 *
 	 * @param min minimum vector
@@ -204,7 +194,6 @@ export class Vec1 {
 	}
 
 	/**
-	 *
 	 * Add together two vectors, vector sum is this vector.
 	 *
 	 * @param v Vector
@@ -219,7 +208,6 @@ export class Vec1 {
 	}
 
 	/**
-	 *
 	 * Subtract two vectors, vector sum is this vector.
 	 *
 	 * @param v Vector
@@ -234,7 +222,6 @@ export class Vec1 {
 	}
 
 	/**
-	 *
 	 * Multiply this vector by a scalar, `s`.
 	 *
 	 * @param s Scalar
@@ -247,7 +234,6 @@ export class Vec1 {
 	}
 
 	/**
-	 *
 	 * Divide this vector by a scalar, `s`.
 	 *
 	 * @param s Scalar
@@ -260,7 +246,6 @@ export class Vec1 {
 	}
 
 	/**
-	 *
 	 * Extend a 1D vector into a 2D space.
 	 *
 	 * @returns Vec2

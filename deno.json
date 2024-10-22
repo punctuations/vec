@@ -8,7 +8,7 @@
 		"useTabs": true,
 		"singleQuote": true,
 		"semiColons": true,
-		"bracketSpacing": true
+		"include": ["src/"]
 	},
 	"lint": {
 		"include": ["src/"],

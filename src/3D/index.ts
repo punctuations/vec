@@ -89,7 +89,9 @@ export class Vec3 {
 			if (v.length == 3) {
 				return v;
 			} else {
-				throw new Error('Unable to vectorize input: exceeded vector length.');
+				throw new Error(
+					'Unable to vectorize input: exceeded vector length.',
+				);
 			}
 		}
 	}
@@ -157,7 +159,7 @@ export class Vec3 {
 
 		this._mag = value.magnitude;
 
-		/* 
+		/*
 			mathematics convention (r, θ, φ)
 			-> https://en.wikipedia.org/wiki/Spherical_coordinate_system
 		*/
@@ -167,7 +169,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Clone this vector into a new vector.
 	 *
 	 * @returns new Vec3
@@ -177,7 +178,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Copy the information of another vector to this vector.
 	 *
 	 * @param v Vector
@@ -194,7 +194,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Zero all coordinates: [0, 0, 0]
 	 *
 	 * @returns Vec3
@@ -208,7 +207,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Normalize to a unit vector.
 	 *
 	 * @returns Vec3
@@ -220,7 +218,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Reverse the direction of all axis, such that it is anti-parallel
 	 *
 	 * @returns Vec3
@@ -234,7 +231,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Reverse the direction of all axis, such that it is anti-parallel
 	 * @see (alias function for {@link antiparalell})
 	 *
@@ -245,7 +241,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Performs the dot product against v0 and v1. (v0 ・ v1)
 	 *
 	 * @param v1 Vector
@@ -262,7 +257,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Returns a new vector perpendicular to v0 and v1.
 	 *
 	 * @param v1 Vector
@@ -281,7 +275,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Returns outer product (direct product) of two vectors.
 	 *
 	 * @param v1 Vector
@@ -298,7 +291,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Returns outer product (direct product) of two vectors.
 	 * @see (alias function for {@link outer})
 	 *
@@ -310,7 +302,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Find the distance between two vectors.
 	 *
 	 * @param v1 Vector
@@ -322,12 +313,11 @@ export class Vec3 {
 		return Math.hypot(
 			this._x ** 2 - v1[0] ** 2,
 			this._y ** 2 - v1[1] ** 2,
-			this._z ** 2 - v1[2] ** 2
+			this._z ** 2 - v1[2] ** 2,
 		);
 	}
 
 	/**
-	 *
 	 * Transform the vector such that θ and φ are satisfied, while sustaining the magnitude. (Mathematics convention used)
 	 *
 	 * @param theta azimuthal angle (x - y)
@@ -340,29 +330,29 @@ export class Vec3 {
 	from(
 		angle: [number, number] | [number] | number,
 		phi?: number,
-		unit: 'deg' | 'rad' = 'rad'
+		unit: 'deg' | 'rad' = 'rad',
 	) {
 		let theta;
 
 		if (Array.isArray(angle)) {
-			theta =
-				angle.length > 0
-					? unit.toLowerCase() == 'deg'
-						? (angle[0] * Math.PI) / 180
-						: angle[0]
-					: Math.atan2(this._y, this._x);
-			phi =
-				angle.length == 2
-					? unit.toLowerCase() == 'deg'
-						? (angle[0] * Math.PI) / 180
-						: angle[1]
-					: Math.acos(this._z / this._mag);
+			theta = angle.length > 0
+				? unit.toLowerCase() == 'deg'
+					? (angle[0] * Math.PI) / 180
+					: angle[0]
+				: Math.atan2(this._y, this._x);
+			phi = angle.length == 2
+				? unit.toLowerCase() == 'deg'
+					? (angle[0] * Math.PI) / 180
+					: angle[1]
+				: Math.acos(this._z / this._mag);
 		} else {
-			theta = unit.toLowerCase() == 'deg' ? (angle * Math.PI) / 180 : angle;
+			theta = unit.toLowerCase() == 'deg'
+				? (angle * Math.PI) / 180
+				: angle;
 			phi = phi ?? Math.acos(this._z / this._mag);
 		}
 
-		/* 
+		/*
 			mathematics convention (r, θ, φ)
 			-> https://en.wikipedia.org/wiki/Spherical_coordinate_system
 		*/
@@ -374,7 +364,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Rotate the vector by an angle, or angles (Mathematics convention used)
 	 *
 	 * @param theta azimuthal angle (x - y)
@@ -401,7 +390,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Get the angle or angles between a positive axis or a vector
 	 *
 	 * @param a Vector or axis
@@ -412,17 +400,20 @@ export class Vec3 {
 		let theta = 0;
 
 		// !0 => true, ![>0] => false
-		if (!this._mag)
+		if (!this._mag) {
 			throw new Error('This vector cannot have magnitude of zero');
+		}
 
-		if (a == 'x' || a == 'y' || a == 'z' || a == 'i' || a == 'j' || a == 'k') {
+		if (
+			a == 'x' || a == 'y' || a == 'z' || a == 'i' || a == 'j' || a == 'k'
+		) {
 			/*
-			
+
 				since,
 					cosθ = (v・v1)/(||v|| * ||v1||)
 
 				however, since it is along the axis we can replace v1 with the value of 1, lying in the direction of the axis.
-			
+
 			*/
 			switch (a) {
 				case 'x':
@@ -442,14 +433,15 @@ export class Vec3 {
 			a = this._vectorize(a);
 
 			// !0 => true, ![>0] => false
-			if (!a[0] || !a[1] || !a[2])
+			if (!a[0] || !a[1] || !a[2]) {
 				throw new Error('Vector cannot have magnitude of zero');
+			}
 
 			/*
-			
+
 				since,
 					cosθ = (v・v1)/(||v|| * ||v1||)
-			
+
 			*/
 			theta = Math.acos(this.dot(a) / (Math.hypot(...a) * this._mag));
 		}
@@ -481,7 +473,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Max between two vectors
 	 *
 	 * @param v1 Vector
@@ -498,7 +489,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Min between two vectors
 	 *
 	 * @param v1 Vector
@@ -515,7 +505,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Round all coords up
 	 *
 	 * @returns Vec3
@@ -529,7 +518,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Round all coords down
 	 *
 	 * @returns Vec3
@@ -543,7 +531,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Round all coords
 	 *
 	 * @returns Vec3
@@ -557,7 +544,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Clamp coordinates between two vectors, min and max.
 	 *
 	 * @param min minimum vector
@@ -578,7 +564,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Add together two vectors, vector sum is this vector.
 	 *
 	 * @param v Vector
@@ -595,7 +580,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Subtract two vectors, vector sum is this vector.
 	 *
 	 * @param v Vector
@@ -612,7 +596,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Multiply this vector by a scalar, `s`.
 	 *
 	 * @param s Scalar
@@ -627,7 +610,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Divide this vector by a scalar, `s`.
 	 *
 	 * @param s Scalar
@@ -642,7 +624,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Project the 3D Vector onto a 2D plane.
 	 *
 	 * @param axis x, y, or z (also can use i, j, k)
@@ -653,7 +634,7 @@ export class Vec3 {
 	project(
 		coords: Axis | Camera,
 		angle?: { alpha: number; beta: number },
-		unit: 'deg' | 'rad' = 'rad'
+		unit: 'deg' | 'rad' = 'rad',
 	) {
 		/* Projection coordinates */
 		let px;
@@ -688,7 +669,9 @@ export class Vec3 {
 			}
 		} else {
 			// camera object
-			let unitConversion = unit.toLowerCase() == 'deg' ? Math.PI / 180 : 1;
+			let unitConversion = unit.toLowerCase() == 'deg'
+				? Math.PI / 180
+				: 1;
 
 			angle = {
 				alpha: unitConversion * (angle?.alpha ?? 0),
@@ -707,36 +690,36 @@ export class Vec3 {
 			/* convert to spherical for yaw and pitch */
 			let r = Math.hypot(cx, cy, cz);
 			let theta = Math.atan2(cy, cx) + angle.alpha;
-			let phi =
-				Math.acos(cz / Math.hypot(cx, cy, cz)) +
-				angle.beta; /* can use atan(√(x²+y²)/z) as well, but less calculations required this way */
+			let phi = Math.acos(cz / Math.hypot(cx, cy, cz)) +
+				angle
+					.beta; /* can use atan(√(x²+y²)/z) as well, but less calculations required this way */
 
-			/* 
+			/*
 				c vector coordinates, this is the normal vector.
-				
+
 				The direction of c determines where the plane will be cast, therefore making it the normal vector.
 			*/
 			cx = r * Math.sin(phi) * Math.cos(theta);
 			cy = r * Math.sin(phi) * Math.sin(phi);
 			cz = r * Math.cos(phi);
 
-			/* 
+			/*
 				calculate the projection from c unto v
 
 				proj_c(v) = [(v dot c)/(c dot c)] * c
 			*/
-			let projcVScalar =
-				(v[0] * cx + v[1] * cy + v[2] * cz) / (cx ** 2 + cy ** 2 + cz ** 2);
+			let projcVScalar = (v[0] * cx + v[1] * cy + v[2] * cz) /
+				(cx ** 2 + cy ** 2 + cz ** 2);
 
 			/* projection c unto v coordinates; c projection */
 			let cpx = projcVScalar * cx;
 			let cpy = projcVScalar * cy;
 			// let cpz = projcVScalar * cz; (will be same length as v[3] or vz)
 
-			/* 
+			/*
 				projection vector!! this is the meat and potatoes
 					+ scale factor, accounting for distance of camera
-					see: 
+					see:
 			*/
 			px = d ? (v[0] - cpx) / d : 0;
 			py = d ? (v[1] - cpy) / d : 0;
@@ -747,7 +730,6 @@ export class Vec3 {
 	}
 
 	/**
-	 *
 	 * Convert 3D vector into 2D vector by removing the z-axis.
 	 *
 	 * @returns Vec2
@@ -783,7 +765,6 @@ export interface Vec3 {
 		setY(y: number): Vec3;
 		setZ(z: number): Vec3;
 		/**
-		 *
 		 * THREEJS method
 		 *
 		 * @returns manhattan length

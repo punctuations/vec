@@ -13,16 +13,18 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 			let u1 = _vectorizeLike(v1);
 			let u2 = _vectorizeLike(v2);
 
-			if (u1.length != u2.length)
+			if (u1.length != u2.length) {
 				return new RangeError('Vectors must be same length');
+			}
 			return new VecN(u1).add(u2);
 		},
 		sub: (v1: Vector2Like | Vector3Like, v2: Vector2Like | Vector3Like) => {
 			let u1 = _vectorizeLike(v1);
 			let u2 = _vectorizeLike(v2);
 
-			if (u1.length != u2.length)
+			if (u1.length != u2.length) {
 				return new RangeError('Vectors must be same length');
+			}
 			return new VecN(v1).sub(v2);
 		},
 		multiply: (v1: Vector2Like | Vector3Like, s: number) => {
@@ -32,15 +34,14 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 			return new VecN(v1).divide(s);
 		},
 		/**
-		 *
 		 * Span of a vector, or matrix.
-		 *
-		 * @todo: accept matricies.
 		 *
 		 * @param v vector or matrix
 		 * @returns VecN
 		 */
 		span: (v: VectorNLike) => {
+			// TODO(@punctuations): implement matrix span
+
 			// dont know what to return a span as, since span([[1, 0], [0, 1]]) is whole plane in R^2
 			/* for matricies like [[0, 1], [1, 0]]
 			 *      two column vectors c_1[0, 1] + c_2[1, 0] = [c_1, c_2] which is all vectors in R^2
@@ -51,7 +52,6 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 			return new VecN(v);
 		},
 		/**
-		 *
 		 * Determines colinearity of two vectors. (Or if a vector is in the span of another vector)
 		 *
 		 * @param span span, or vector to compare against
@@ -68,11 +68,11 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 			if (span.length !== v.length) return false;
 
 			// Find to see if either of vectors is a zero vector
-			if (v.every(val => val === 0)) return false; // v is a zero vector
-			if (span.every(val => val === 0)) return true; // span is a zero vector
+			if (v.every((val) => val === 0)) return false; // v is a zero vector
+			if (span.every((val) => val === 0)) return true; // span is a zero vector
 
 			// there is atleast one non-zero element in v and span
-			const index = v.findIndex(val => val !== 0);
+			const index = v.findIndex((val) => val !== 0);
 			const gcf = span[index] / v[index];
 
 			for (let i = 0; i < span.length; i++) {
@@ -101,7 +101,7 @@ function _normalize(vec: VectorNLike | VecN): number[] {
 	// vec is Float32Array | Float64Array | number[] > 0
 	const mag = Math.hypot(...vec);
 
-	if (mag !== 0) return vec.map(c => c / mag);
+	if (mag !== 0) return vec.map((c) => c / mag);
 
 	return Array.from(vec);
 }

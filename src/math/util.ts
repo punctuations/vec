@@ -22,8 +22,9 @@ export const _vectorizeLike = (v: VectorNLike): number[] => {
 		}
 	} else {
 		// nD
-		if (v instanceof Float32Array || v instanceof Float64Array)
+		if (v instanceof Float32Array || v instanceof Float64Array) {
 			v = Array.from(v);
+		}
 
 		return v;
 	}

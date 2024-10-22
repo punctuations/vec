@@ -83,7 +83,9 @@ export class VecN {
 			if (v.length == this.dimensions) {
 				return v;
 			} else {
-				throw new Error('Unable to vectorize input: exceeded vector length.');
+				throw new Error(
+					'Unable to vectorize input: exceeded vector length.',
+				);
 			}
 		}
 	}
@@ -103,7 +105,6 @@ export class VecN {
 	}
 
 	/**
-	 *
 	 * Alias for {@link coords}.
 	 *
 	 * @returns Array
@@ -113,7 +114,6 @@ export class VecN {
 	}
 
 	/**
-	 *
 	 * Clone this vector into a new vector.
 	 *
 	 * @returns new VecN
@@ -123,7 +123,6 @@ export class VecN {
 	}
 
 	/**
-	 *
 	 * Copy the information of another vector to this vector.
 	 *
 	 * @param v Vector
@@ -138,7 +137,6 @@ export class VecN {
 	}
 
 	/**
-	 *
 	 * Zero all coordinates: [0, 0, 0, ...]
 	 *
 	 * @returns VecN
@@ -152,19 +150,17 @@ export class VecN {
 	}
 
 	/**
-	 *
 	 * Normalize to a unit vector.
 	 *
 	 * @returns VecN
 	 */
 	unit() {
-		this._coords = this._coords.map(c => c / this._mag);
+		this._coords = this._coords.map((c) => c / this._mag);
 
 		return this;
 	}
 
 	/**
-	 *
 	 * Reverse the direction of all axis, such that it is anti-parallel
 	 *
 	 * @returns VecN
@@ -178,7 +174,6 @@ export class VecN {
 	}
 
 	/**
-	 *
 	 * Reverse the direction of all axis, such that it is anti-parallel
 	 * (alias function for {@link antiparalell})
 	 *
@@ -189,7 +184,6 @@ export class VecN {
 	}
 
 	/**
-	 *
 	 * Performs the dot product against v0 and v1. (v0 ・ v1)
 	 *
 	 * @param v1 Vector
@@ -222,7 +216,6 @@ export class VecN {
 	// }
 
 	/**
-	 *
 	 * Find the distance between two vectors.
 	 *
 	 * @param v1 Vector
@@ -241,7 +234,6 @@ export class VecN {
 	}
 
 	/**
-	 *
 	 * Max between two vectors
 	 *
 	 * @param v1 Vector
@@ -256,7 +248,6 @@ export class VecN {
 	}
 
 	/**
-	 *
 	 * Min between two vectors
 	 *
 	 * @param v1 Vector
@@ -271,43 +262,39 @@ export class VecN {
 	}
 
 	/**
-	 *
 	 * Round all coords up
 	 *
 	 * @returns VecN
 	 */
 	ceil() {
-		this._coords = this._coords.map(c => Math.ceil(c));
+		this._coords = this._coords.map((c) => Math.ceil(c));
 
 		return this;
 	}
 
 	/**
-	 *
 	 * Round all coords down
 	 *
 	 * @returns VecN
 	 */
 	floor() {
-		this._coords = this._coords.map(c => Math.floor(c));
+		this._coords = this._coords.map((c) => Math.floor(c));
 
 		return this;
 	}
 
 	/**
-	 *
 	 * Round all coords
 	 *
 	 * @returns VecN
 	 */
 	round() {
-		this._coords = this._coords.map(c => Math.round(c));
+		this._coords = this._coords.map((c) => Math.round(c));
 
 		return this;
 	}
 
 	/**
-	 *
 	 * Clamp coordinates between two vectors, min and max.
 	 *
 	 * @param min minimum vector
@@ -345,7 +332,6 @@ export class VecN {
 	}
 
 	/**
-	 *
 	 * Add together two vectors, vector sum is this vector.
 	 *
 	 * @param v Vector
@@ -360,7 +346,6 @@ export class VecN {
 	}
 
 	/**
-	 *
 	 * Subtract two vectors, vector sum is this vector.
 	 *
 	 * @param v Vector
@@ -375,27 +360,25 @@ export class VecN {
 	}
 
 	/**
-	 *
 	 * Multiply this vector by a scalar, `s`.
 	 *
 	 * @param s Scalar
 	 * @returns VecN
 	 */
 	multiply(s: number) {
-		this._coords = this._coords.map(c => c * s);
+		this._coords = this._coords.map((c) => c * s);
 
 		return this;
 	}
 
 	/**
-	 *
 	 * Divide this vector by a scalar, `s`.
 	 *
 	 * @param s Scalar
 	 * @returns VecN
 	 */
 	divide(s: number) {
-		this._coords = this._coords.map(c => c / s);
+		this._coords = this._coords.map((c) => c / s);
 
 		return this;
 	}
