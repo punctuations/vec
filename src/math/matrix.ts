@@ -141,15 +141,39 @@ export class Matrix {
 	 */
 	identity() {
 		// make 1 in diagonal
+		this._setScalar(0);
+
+		for (let i = 0; i < this._rows; i++) {
+			this._matrix[i][i] = 1;
+		}
+
+		return this;
+	}
+
+	/**
+	 * Transpose matrix (i.e. swap rows -> cols)
+	 *
+	 * @returns Matrix
+	 */
+	transpose(): Matrix {
+		// three bitwise xors to swap rows <-> cols
+		this._rows = this._rows ^ this._cols;
+		this._cols = this._rows ^ this._cols;
+		this._rows = this._rows ^ this._cols;
+
+		const m = Array(this._rows).fill(null).map(() =>
+			Array(this._cols).fill(0)
+		);
+
 		for (let i = 0; i < this._rows; i++) {
 			for (let j = 0; j < this._cols; j++) {
-				if (i === j) {
-					this._matrix[i][j] = 1;
-				} else {
-					this._matrix[i][j] = 0;
-				}
+				m[i][j] = this._matrix[j][i];
 			}
 		}
+
+		this._matrix = m;
+
+		return this;
 	}
 
 	/**
@@ -289,11 +313,15 @@ export class Matrix {
 	}
 
 	power_of(n: number): Matrix {
+		if (n === 0) return this.identity();
+
 		// compute matrix multiplication n times
-		let matrix: MatrixLike | Matrix = this._matrix;
-		for (let i = 0; i < n; i++) {
-			matrix = this.multiply(matrix);
+		for (let i = 0; i < n - 1; i++) {
+			// have to iterate for n - 1 since for loop i < n,
+			// where n = 1 will result in A^2.
+			this.multiply(this._matrix);
 		}
+
 		return this;
 	}
 
@@ -305,9 +333,13 @@ export class Matrix {
 		return base;
 	}
 
-	// e^[[1,0],[0,1]] || e^(A)
+	// e^[[0,-1],[1,0]] || e^(A)
 	exp(): number {
 		// TODO(@punctuations): implement e^(A) exponentiation
+		if (!this._isSquare) {
+			throw new RangeError('Matrix must be square for exp.');
+		}
+
 		return 0;
 	}
 
