@@ -1,5 +1,5 @@
-import {Vec2, Vector2Like} from '../2D';
-import {Vec3, Vector, Vector3Like} from '../3D';
+import {Vec2, Vector2Like} from '../2D/index.ts';
+import {Vec3, Vector, Vector3Like} from '../3D/index.ts';
 
 export type VectorNLike = Vector | Vector2Like | Vector3Like | number[];
 

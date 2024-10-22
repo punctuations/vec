@@ -1,12 +1,12 @@
-export { Vec3 } from './3D';
-export type { Vector, Vector3Like } from './3D';
+export { Vec3 } from './3D/index.ts';
+export type { Vector, Vector3Like } from './3D/index.ts';
 
-export { Vec2 } from './2D';
-export type { Vector2Like } from './2D';
+export { Vec2 } from './2D/index.ts';
+export type { Vector2Like } from './2D/index.ts';
 
-export { VecN } from './N'
-export type { VectorNLike } from './N'
+export { VecN } from './N/index.ts'
+export type { VectorNLike } from './N/index.ts'
 
 
-export { vec } from './math/vec';
+export { vec } from './math/vec.ts';
 

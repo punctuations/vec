@@ -1,4 +1,4 @@
-import { VectorNLike } from "../N"
+import { VectorNLike } from "../N/index.ts"
 
 // 2D, 3D, ..., nD
 export const _vectorizeLike = (v: VectorNLike) => {

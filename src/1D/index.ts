@@ -1,5 +1,5 @@
-import { Vec2 } from "../2D";
-import { Vector } from "../3D";
+import { Vec2 } from "../2D/index.ts";
+import { Vector } from "../3D/index.ts";
 
 export type Vector1Like = Vector | [number] | number;
 

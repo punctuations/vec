@@ -1,4 +1,7 @@
 {
+	"compilerOptions": {
+		"strict": true
+	},
 	"lint": {
 		"include": ["src/"],
 		"rules": {
@@ -6,5 +9,6 @@
 			"include": ["ban-untagged-todo"],
 			"exclude": ["prefer-const", "no-explicit-any"]
 		}
-	}
+	},
+	"exclude": ["dist/", "test.ts"]
 }
