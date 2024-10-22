@@ -4,21 +4,25 @@ import { Vector } from "../3D/index.ts";
 export type Vector1Like = Vector | [number] | number;
 
 export class Vec1 {
-    private _coord: number;
+	private _coord: number;
 
+	readonly dimensions: number = 1;
+	readonly length: number = 1;
+	readonly isVector1: boolean = true;
 
-    constructor(v: Vector1Like) {
-        if (Array.isArray(v) || v instanceof Float32Array || v instanceof Float64Array) {
-            this._coord = v[0]
-        } else {
-            this._coord = v;
-        }
+	constructor(v: Vector1Like) {
+		if (
+			Array.isArray(v) ||
+			v instanceof Float32Array ||
+			v instanceof Float64Array
+		) {
+			this._coord = v[0];
+		} else {
+			this._coord = v;
+		}
+	}
 
-        Vec1.prototype.dimensions, Vec1.prototype.length = 2;
-		Vec1.prototype.isVector1 = true;
-    }
-
-    private _vectorize(v: Vector1Like): number {
+	private _vectorize(v: Vector1Like): number {
 		if (
 			!(v instanceof Float32Array) &&
 			!(v instanceof Float64Array) &&
@@ -29,20 +33,20 @@ export class Vec1 {
 			if (v.length == 1) {
 				return v[0];
 			} else {
-				throw new Error('Unable to vectorize input: exceeded vector length.')
+				throw new Error('Unable to vectorize input: exceeded vector length.');
 			}
 		}
-    }
+	}
 
-    get coord(): number {
-        return this._coord;
-    }
+	get coord(): number {
+		return this._coord;
+	}
 
-    set coord(value: number) {
-        this._coord = value;
-    }
+	set coord(value: number) {
+		this._coord = value;
+	}
 
-    /**
+	/**
 	 *
 	 * Clone this vector into a new vector.
 	 *
@@ -50,9 +54,9 @@ export class Vec1 {
 	 */
 	clone() {
 		return new Vec1(this._coord);
-    }
-    
-    /**
+	}
+
+	/**
 	 *
 	 * Copy the information of another vector to this vector.
 	 *
@@ -62,7 +66,7 @@ export class Vec1 {
 	copy(v: Vector1Like) {
 		v = this._vectorize(v);
 
-        this._coord = v;
+		this._coord = v;
 
 		return this;
 	}
@@ -74,7 +78,7 @@ export class Vec1 {
 	 * @returns Vec1
 	 */
 	zero() {
-        this._coord = 0;
+		this._coord = 0;
 
 		return this;
 	}
@@ -86,7 +90,7 @@ export class Vec1 {
 	 * @returns Vec1
 	 */
 	unit() {
-        this._coord = 1;
+		this._coord = 1;
 
 		return this;
 	}
@@ -98,7 +102,7 @@ export class Vec1 {
 	 * @returns Vec1
 	 */
 	antiparalell() {
-        this._coord = -this._coord;
+		this._coord = -this._coord;
 
 		return this;
 	}
@@ -112,9 +116,9 @@ export class Vec1 {
 	 */
 	oppose() {
 		return this.antiparalell();
-    }
-    
-    /**
+	}
+
+	/**
 	 *
 	 * Max between two vectors
 	 *
@@ -181,9 +185,9 @@ export class Vec1 {
 	}
 
 	/**
-	 * 
+	 *
 	 * Clamp coordinates between two vectors, min and max.
-	 * 
+	 *
 	 * @param min minimum vector
 	 * @param max maximum vector
 	 * @returns Vec1
@@ -253,29 +257,27 @@ export class Vec1 {
 		this._coord /= s;
 
 		return this;
-    }
-    
-    /**
-     * 
-     * Extend a 1D vector into a 2D space.
-     * 
-     * @returns Vec2
-     */
-    extend(): Vec2 {
-        return new Vec2(this._coord, 0)
 	}
 
-    *[ Symbol.iterator ]() {
+	/**
+	 *
+	 * Extend a 1D vector into a 2D space.
+	 *
+	 * @returns Vec2
+	 */
+	extend(): Vec2 {
+		return new Vec2(this._coord, 0);
+	}
 
+	*[Symbol.iterator]() {
 		yield this._coord;
-
 	}
 }
 
 export interface Vec1 {
-	dimensions: number;
-	length: number;
-	isVector1: boolean;
+	readonly dimensions: number;
+	readonly length: number;
+	readonly isVector1: boolean;
 
 	/**
 	 * Iterating through a Vector1 instance will yield its single component.

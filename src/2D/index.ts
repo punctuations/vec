@@ -1,6 +1,6 @@
 import { Vec3, Vector } from "../3D/index.ts";
 
-export type Vector2Like = Vector | [number, number] | { x: number, y: number };
+export type Vector2Like = Vector | [number, number] | { x: number; y: number };
 
 type Axis2D = 'x' | 'y' | 'i' | 'j';
 
@@ -10,12 +10,16 @@ export interface Vec2Coords {
 }
 
 export class Vec2 {
-    private _x: number;
+	private _x: number;
 	private _y: number;
 
 	private _mag: number = 0;
 
-    constructor();
+	readonly length: number = 2;
+	readonly dimensions: number = 2;
+	readonly isVector2: boolean = true;
+
+	constructor();
 	constructor(x: number, y: number);
 	constructor(v: Vector2Like);
 	constructor(xin?: number | Vector2Like, y?: number) {
@@ -41,10 +45,8 @@ export class Vec2 {
 		}
 
 		this._mag = this._calculateMagnitude();
+	}
 
-		Vec2.prototype.dimensions, Vec2.prototype.length = 2;
-    }
-    
 	private static isVec2Coords(obj: any): obj is Vec2Coords {
 		// ensure it is __only__ a 2D vector, not 3D
 		return 'x' in obj && 'y' in obj && !('z' in obj);
@@ -65,12 +67,12 @@ export class Vec2 {
 			if (v.length == 2) {
 				return v;
 			} else {
-				throw new Error('Unable to vectorize input: exceeded vector length.')
+				throw new Error('Unable to vectorize input: exceeded vector length.');
 			}
 		}
-    }
-    
-    get x(): number {
+	}
+
+	get x(): number {
 		return this._x;
 	}
 
@@ -93,17 +95,17 @@ export class Vec2 {
 	get coords(): [number, number] {
 		return [this._x, this._y];
 	}
-	
+
 	get mag(): number {
 		return this._mag;
 	}
 
-	set mag(value: {magnitude: number, theta?: number}) {
+	set mag(value: { magnitude: number; theta?: number }) {
 		value.theta = value.theta ?? 0;
 
 		this._mag = value.magnitude;
 
-		this._x = value.magnitude * Math.cos(value.theta)
+		this._x = value.magnitude * Math.cos(value.theta);
 		this._y = value.magnitude * Math.sin(value.theta);
 	}
 
@@ -157,7 +159,7 @@ export class Vec2 {
 	 * @returns Vec2
 	 */
 	unit() {
-		this._x, this._y = Math.SQRT1_2;
+		this._x, (this._y = Math.SQRT1_2);
 
 		return this;
 	}
@@ -201,26 +203,25 @@ export class Vec2 {
 
 		return Math.hypot(sx, sy);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Calculate the 2D determinate.
-	 * 
+	 *
 	 * @param v1 Vector
 	 * @returns Scalar value
 	 * @see https://math.stackexchange.com/questions/3158634/
 	 */
 	cross(v1: Vector2Like) {
-
 		// cross product does not exist in 2D, see: https://math.stackexchange.com/questions/3158634/
 		// rather, we will use wedge product
 		return this.wedge(v1);
 	}
 
 	/**
-	 * 
+	 *
 	 * Calculate the wedge product for two vectors
-	 * 
+	 *
 	 * @param v1 Vector
 	 * @returns Scalar value
 	 */
@@ -231,16 +232,16 @@ export class Vec2 {
 	}
 
 	/**
-	 * 
+	 *
 	 * Find the distance between two vectors.
-	 * 
+	 *
 	 * @param v1 Vector
 	 * @return distance
 	 */
 	distance(v1: Vector2Like): number {
 		v1 = this._vectorize(v1);
 
-		return Math.hypot((this._x**2 - v1[0]**2), (this._y**2 - v1[1]**2))
+		return Math.hypot(this._x ** 2 - v1[0] ** 2, this._y ** 2 - v1[1] ** 2);
 	}
 
 	/**
@@ -252,7 +253,6 @@ export class Vec2 {
 	 * @returns Vec3
 	 */
 	from(theta: number, unit: 'deg' | 'rad' = 'rad') {
-
 		if (unit.toLowerCase() === 'deg') {
 			theta *= Math.PI / 180;
 		}
@@ -407,9 +407,9 @@ export class Vec2 {
 	}
 
 	/**
-	 * 
+	 *
 	 * Clamp coordinates between two vectors, min and max.
-	 * 
+	 *
 	 * @param min minimum vector
 	 * @param max maximum vector
 	 * @returns Vec2
@@ -429,7 +429,7 @@ export class Vec2 {
 	/**
 	 * Segment vector between two points.
 	 * From A to B
-	 * 
+	 *
 	 * @param A First Point
 	 * @param B Second Point
 	 * @returns Vec2
@@ -504,32 +504,26 @@ export class Vec2 {
 		return this;
 	}
 
-    /**
-     * 
-     * Extend a 2D vector into a 3D space.
-     * 
-     * @returns Vec3
-     */
-    extend(): Vec3 {
-        return new Vec3(this._x, this._y, 0)
+	/**
+	 *
+	 * Extend a 2D vector into a 3D space.
+	 *
+	 * @returns Vec3
+	 */
+	extend(): Vec3 {
+		return new Vec3(this._x, this._y, 0);
 	}
-	
-	*[ Symbol.iterator ]() {
 
+	*[Symbol.iterator]() {
 		yield this._x;
 		yield this._y;
-
-	}
-
-	*[ Symbol.length ]() {
-		yield this.dimensions;
 	}
 }
 
 export interface Vec2 {
-	dimensions: number;
-	length: number;
-	isVector2: boolean;
+	readonly dimensions: number;
+	readonly length: number;
+	readonly isVector2: boolean;
 	three: {
 		set(x: number, y: number): Vec2;
 		setX(x: number): Vec2;
@@ -564,14 +558,14 @@ Vec2.prototype.three = {
 
 		return this;
 	},
-	applyMatrix3: function(this: Vec2, m): Vec2 {
-
-		const x = this.x, y = this.y;
+	applyMatrix3: function (this: Vec2, m): Vec2 {
+		const x = this.x,
+			y = this.y;
 		const e = m.elements;
 
-		this.x = e[ 0 ] * x + e[ 3 ] * y + e[ 6 ];
-		this.y = e[ 1 ] * x + e[ 4 ] * y + e[ 7 ];
+		this.x = e[0] * x + e[3] * y + e[6];
+		this.y = e[1] * x + e[4] * y + e[7];
 
 		return this;
-	}
+	},
 };
