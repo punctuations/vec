@@ -8,38 +8,48 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 	range = range || [2, 3];
 
 	return {
-		add: (v1: Vector2Like | Vector3Like, v2: Vector2Like | Vector3Like) => {
+		add: (
+			v1: Vector2Like | Vector3Like,
+			v2: Vector2Like | Vector3Like,
+		): VecN => {
 			// into a more managable form -- is inefficient taking up memory for no reason
 			let u1 = _vectorizeLike(v1);
 			let u2 = _vectorizeLike(v2);
 
 			if (u1.length != u2.length) {
-				return new RangeError('Vectors must be same length');
+				throw new RangeError('Vectors must be same length');
 			}
 			return new VecN(u1).add(u2);
 		},
-		sub: (v1: Vector2Like | Vector3Like, v2: Vector2Like | Vector3Like) => {
+
+		sub: (
+			v1: Vector2Like | Vector3Like,
+			v2: Vector2Like | Vector3Like,
+		): VecN => {
 			let u1 = _vectorizeLike(v1);
 			let u2 = _vectorizeLike(v2);
 
 			if (u1.length != u2.length) {
-				return new RangeError('Vectors must be same length');
+				throw new RangeError('Vectors must be same length');
 			}
 			return new VecN(v1).sub(v2);
 		},
-		multiply: (v1: Vector2Like | Vector3Like, s: number) => {
+
+		multiply: (v1: Vector2Like | Vector3Like, s: number): VecN => {
 			return new VecN(v1).multiply(s);
 		},
-		divide: (v1: Vector2Like | Vector3Like, s: number) => {
+
+		divide: (v1: Vector2Like | Vector3Like, s: number): VecN => {
 			return new VecN(v1).divide(s);
 		},
+
 		/**
 		 * Span of a vector, or matrix.
 		 *
 		 * @param v vector or matrix
 		 * @returns VecN
 		 */
-		span: (v: VectorNLike) => {
+		span: (v: VectorNLike): VecN => {
 			// TODO(@punctuations): implement matrix span
 
 			// dont know what to return a span as, since span([[1, 0], [0, 1]]) is whole plane in R^2
@@ -51,6 +61,7 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 
 			return new VecN(v);
 		},
+
 		/**
 		 * Determines colinearity of two vectors. (Or if a vector is in the span of another vector)
 		 *
@@ -58,7 +69,7 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 		 * @param v vector
 		 * @returns boolean
 		 */
-		colinear: (span: VectorNLike | VecN, v: VectorNLike) => {
+		colinear: (span: VectorNLike | VecN, v: VectorNLike): boolean => {
 			if (span instanceof VecN) span = span.coords;
 
 			span = _vectorizeLike(span);
@@ -84,10 +95,12 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 			// vectors are collinear
 			return true;
 		},
-		normalize: (vec: VectorNLike) => {
-			return _normalize(vec);
+
+		normalize: (vec: VectorNLike | VecN): VecN => {
+			return new VecN(_normalize(vec));
 		},
-		zero: (n: number) => {
+
+		zero: (n: number): VecN => {
 			// return a zero vector in R^n
 			return new VecN(Array(n).fill(0));
 		},
