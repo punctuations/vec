@@ -171,6 +171,8 @@ export class Matrix {
 		this._cols = this._rows ^ this._cols;
 		this._rows = this._rows ^ this._cols;
 
+		this._dims = [this._rows, this._cols];
+
 		const m = Array(this._rows).fill(null).map(() =>
 			Array(this._cols).fill(0)
 		);
