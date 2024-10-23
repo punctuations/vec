@@ -1,5 +1,7 @@
 import { Vec2 } from '../2D/index.ts';
-import { Vector } from '../3D/index.ts';
+import { Vec3, Vector } from '../3D/index.ts';
+import { VecN } from '../index.ts';
+import { Matrix, MatrixLike } from '../math/matrix.ts';
 
 export type Vector1Like = Vector | [number] | number;
 
@@ -243,6 +245,35 @@ export class Vec1 {
 		this._coord /= s;
 
 		return this;
+	}
+
+	/**
+	 * Apply a matrix transformation to this vector.
+	 *
+	 * @param m Matrix
+	 * @returns Vec1 | Vec2 | Vec3 | VecN
+	 */
+	transform(m: Matrix | MatrixLike): Vec1 | Vec2 | Vec3 | VecN {
+		if (!(m instanceof Matrix)) {
+			m = new Matrix(m);
+		}
+
+		const x = new Matrix([[this._coord]]);
+
+		const result = m.multiply(x);
+
+		const transform = result.matrix;
+
+		// simple cases
+		if (result.rows == 3) {
+			return new Vec3(transform[0][0], transform[1][0], transform[2][0]);
+		}
+		if (result.rows == 2) return new Vec2(transform[0][0], transform[1][0]);
+		if (result.rows == 1) return new Vec1(transform[0][0]);
+
+		// result is in the form of [[x1], [x2], ..., [xn]]
+
+		return new VecN(transform.map((v) => v[0]));
 	}
 
 	/**
