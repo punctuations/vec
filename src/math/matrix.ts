@@ -7,6 +7,8 @@ export class Matrix {
 	private _matrix: MatrixLike = [];
 	private _isSquare: boolean = false;
 
+	private _dims: number[];
+
 	constructor(matrix: MatrixLike | number) {
 		// allow to just specify square dimensions
 		if (typeof matrix === 'number') {
@@ -38,22 +40,18 @@ export class Matrix {
 			}
 		}
 
-		Matrix.prototype.dimensions,
-			(Matrix.prototype.length = [this._rows, this._cols]);
+		this._dims = [this._rows, this._cols];
 	}
 
 	private _set(m: Matrix | MatrixLike) {
 		if (m instanceof Matrix) {
-			m = m._matrix;
+			m = m.matrix;
 		}
 
 		if (m.length === m[0].length) this._isSquare = true;
+		else this._isSquare = false;
 
-		for (let i = 0; i < this._rows; i++) {
-			for (let j = 0; j < this._cols; j++) {
-				this._matrix[i][j] = m[i][j];
-			}
-		}
+		this._matrix = m;
 	}
 
 	private _setScalar(c: number) {
@@ -114,6 +112,18 @@ export class Matrix {
 				}
 			}
 		}
+	}
+
+	get matrix(): MatrixLike {
+		return this._matrix;
+	}
+
+	get dimensions(): number[] {
+		return this._dims;
+	}
+
+	get length(): number[] {
+		return this._dims;
 	}
 
 	/**
@@ -180,7 +190,6 @@ export class Matrix {
 	 * Reduce matrix to row echelon form.
 	 *
 	 * @param m matrix
-	 *
 	 * @returns Matrix
 	 */
 	rref(m: MatrixLike): Matrix {
@@ -237,91 +246,134 @@ export class Matrix {
 		return this._determinant(this._matrix);
 	}
 
-	// either return NEW matrix __OR__ change current matrix value
-	// return new matrix
+	/**
+	 * Add two matrices. Sum is this matrix.
+	 *
+	 * @param m1 Matrix
+	 * @returns Matrix
+	 */
 	add(m1: MatrixLike): Matrix {
-		let m_buffer: number[][] = [];
-
 		if (this._isSquare) {
 			for (let i = 0; i < m1.length; i++) {
 				for (let j = 0; m1[0].length; j++) {
-					m_buffer[i][j] = this._matrix[i][j] + m1[i][j];
+					this._matrix[i][j] += m1[i][j];
 				}
 			}
 		} else {
 			throw new Error('Matrix must be square');
 		}
 
-		return new Matrix(m_buffer);
+		return this;
 	}
 
-	// create alias of 'sub'
+	/**
+	 * Subtract two matrices. Difference is this matrix.
+	 *
+	 * @param m1 Matrix
+	 * @returns Matrix
+	 */
 	subtract(m1: MatrixLike): Matrix {
-		let m_buffer: number[][] = [];
-
 		if (this._isSquare) {
 			for (let i = 0; i < m1.length; i++) {
 				for (let j = 0; m1[0].length; j++) {
-					m_buffer[i][j] = this._matrix[i][j] - m1[i][j];
+					this._matrix[i][j] -= m1[i][j];
 				}
 			}
 		}
 
-		return new Matrix(m_buffer);
+		return this;
 	}
 
-	// support m x n and n x n matrix multiplication.
-	// will have height of m1 and width of m2
-	// https://en.wikipedia.org/wiki/Matrix_multiplication
-	multiply(m1: MatrixLike | Matrix): Matrix {
+	/**
+	 * Matrix multiplication. Product is this matrix.
+	 *
+	 * @see https://en.wikipedia.org/wiki/Matrix_multiplication
+	 *
+	 * @param m1 matrix to multiply
+	 * @returns Matrix
+	 */
+	multiply(m1: Matrix | MatrixLike): Matrix {
 		if (m1 instanceof Matrix) {
 			m1 = m1._matrix;
 		}
+
+		if (this._cols !== m1.length) {
+			throw new RangeError(
+				'Matrix multiplication must be in the form of m x n * n x p',
+			);
+		}
+
+		// will have height of m1 and width of m2
+
+		let A: number[][] = Array(this._rows).fill(null).map(() =>
+			Array(m1[0].length).fill(0)
+		);
 
 		// new matrix dimensions: m1.rows x m2.cols
 		for (let i = 0; i < this._rows; i++) {
 			for (let j = 0; j < m1[0].length; j++) {
-				m1[i][j] = this._matrix[i][j] * m1[i][j];
+				for (let k = 0; k < this._cols; k++) {
+					A[i][j] += this._matrix[i][k] * m1[k][j];
+				}
 			}
 		}
 
-		this.dimensions = [this._rows, m1[0].length];
+		this._dims = [this._rows, m1[0].length];
 		this._cols = m1[0].length;
 
-		this._set(m1);
+		this._set(A);
 		return this;
 	}
 
-	// create alias of 'div'
-	divide(m1: MatrixLike) {
+	/**
+	 * Matrix division. Quotient is this matrix.
+	 *
+	 * @param m1 Matrix
+	 * @returns Matrix
+	 */
+	divide(m1: Matrix | MatrixLike) {
 		if (m1 instanceof Matrix) {
 			m1 = m1._matrix;
 		}
 
-		// new matrix dimensions: m1.rows / m2.cols
+		if (this._cols !== m1.length) {
+			throw new RangeError(
+				'Matrix division must be in the form of m x n * n x p',
+			);
+		}
+
+		let A: number[][] = Array(this._rows).fill(null).map(() =>
+			Array(m1[0].length).fill(0)
+		);
+
+		// new matrix dimensions: m1.rows x m2.cols
 		for (let i = 0; i < this._rows; i++) {
 			for (let j = 0; j < m1[0].length; j++) {
-				m1[i][j] = this._matrix[i][j] / m1[i][j];
+				for (let k = 0; k < this._cols; k++) {
+					A[i][j] += this._matrix[i][k] / m1[k][j];
+				}
 			}
 		}
 
-		this.dimensions = [this._rows, m1[0].length];
+		this._dims = [this._rows, m1[0].length];
 		this._cols = m1[0].length;
 
-		this._set(m1);
+		this._set(A);
 		return this;
 	}
 
+	/**
+	 * Raise matrix to the power of n.
+	 *
+	 * @param n exponent
+	 * @returns Matrix
+	 */
 	power_of(n: number): Matrix {
-		if (n === 0) return this.identity();
-
 		// compute matrix multiplication n times
-		for (let i = 0; i < n - 1; i++) {
-			// have to iterate for n - 1 since for loop i < n,
-			// where n = 1 will result in A^2.
-			this.multiply(this._matrix);
+		let matrix: MatrixLike | Matrix = this._matrix;
+		for (let i = 0; i < n; i++) {
+			matrix = this.multiply(matrix);
 		}
-
 		return this;
 	}
 
@@ -351,8 +403,6 @@ export class Matrix {
 }
 
 export interface Matrix {
-	dimensions: number[];
-	length: number[];
 	three: {
 		//TODO(@punctuations): add backwards compat. + implement methods
 		makeOrthographic(
@@ -370,30 +420,3 @@ export interface Matrix {
 	 */
 	[Symbol.iterator](): Iterator<number>;
 }
-
-export const matrix = {
-	new: (m: MatrixLike): Matrix => {
-		return new Matrix(m);
-	},
-	multiply: (m2: number[][]): Matrix => {
-		return new Matrix(m2);
-	},
-	pow: (base: number) => {
-		// matrix([[0, 1], [-1, 0]]).pow(2)
-
-		return base;
-	},
-	exp: () => {
-		// e^(A)
-
-		return Math.E;
-	},
-	// valueOf: () => {
-	//     return m;
-	// }
-};
-
-/*
-    i want to be able to do m + m2
-    or m * m2, etc...
-*/
