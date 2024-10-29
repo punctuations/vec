@@ -24,7 +24,9 @@ export class Vec1 {
 		}
 	}
 
-	private _vectorize(v: Vector1Like): number {
+	private _vectorize(v: Vector1Like | Vec1): number {
+		if (v instanceof Vec1) return v.coord;
+
 		if (
 			!(v instanceof Float32Array) &&
 			!(v instanceof Float64Array) &&
@@ -65,7 +67,7 @@ export class Vec1 {
 	 * @param v Vector
 	 * @returns Vec1
 	 */
-	copy(v: Vector1Like) {
+	copy(v: Vector1Like | Vec1) {
 		v = this._vectorize(v);
 
 		this._coord = v;
@@ -122,7 +124,7 @@ export class Vec1 {
 	 * @param v1 Vector
 	 * @returns Vec1
 	 */
-	max(v1: Vector1Like) {
+	max(v1: Vector1Like | Vec1) {
 		v1 = this._vectorize(v1);
 
 		this._coord = Math.max(this._coord, v1);
@@ -136,7 +138,7 @@ export class Vec1 {
 	 * @param v1 Vector
 	 * @returns Vec1
 	 */
-	min(v1: Vector1Like) {
+	min(v1: Vector1Like | Vec1) {
 		v1 = this._vectorize(v1);
 
 		this._coord = Math.min(this._coord, v1);
@@ -184,7 +186,7 @@ export class Vec1 {
 	 * @param max maximum vector
 	 * @returns Vec1
 	 */
-	clamp(min: Vector1Like, max: Vector1Like) {
+	clamp(min: Vector1Like | Vec1, max: Vector1Like | Vec1) {
 		min = this._vectorize(min);
 		max = this._vectorize(max);
 
@@ -201,7 +203,7 @@ export class Vec1 {
 	 * @param v Vector
 	 * @returns Vec1
 	 */
-	add(v: Vector1Like) {
+	add(v: Vector1Like | Vec1) {
 		v = this._vectorize(v);
 
 		this._coord += v;
@@ -215,7 +217,7 @@ export class Vec1 {
 	 * @param v Vector
 	 * @returns Vec1
 	 */
-	sub(v: Vector1Like) {
+	sub(v: Vector1Like | Vec1) {
 		v = this._vectorize(v);
 
 		this._coord -= v;

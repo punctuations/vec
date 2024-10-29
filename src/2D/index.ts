@@ -1,6 +1,6 @@
 import { Vec1 } from '../1D/index.ts';
 import { Vec3, Vector } from '../3D/index.ts';
-import { VecN } from '../index.ts';
+import { vec, VecN } from '../index.ts';
 import { Matrix, type MatrixLike } from '../math/matrix.ts';
 
 export type Vector2Like = Vector | [number, number] | { x: number; y: number };
@@ -59,7 +59,9 @@ export class Vec2 {
 		return Math.hypot(this._x, this._y);
 	}
 
-	private _vectorize(v: Vector2Like): Vector | [number, number] {
+	private _vectorize(v: Vector2Like | Vec2): Vector | [number, number] {
+		if (v instanceof Vec2) return v.coords;
+
 		if (
 			!(v instanceof Float32Array) &&
 			!(v instanceof Float64Array) &&
@@ -105,7 +107,11 @@ export class Vec2 {
 		return this._mag;
 	}
 
-	set mag(value: { magnitude: number; theta?: number }) {
+	/**
+	 * Theta is assumed to be in radians.
+	 */
+	set mag(value: number | { magnitude: number; theta: number }) {
+		if (typeof value === 'number') value = { magnitude: value, theta: 0 };
 		value.theta = value.theta ?? 0;
 
 		this._mag = value.magnitude;
@@ -133,11 +139,12 @@ export class Vec2 {
 	 * @param v Vector
 	 * @returns Vec2
 	 */
-	copy(v: Vector2Like) {
+	copy(v: Vector2Like | Vec2) {
 		v = this._vectorize(v);
 
 		this._x = v[0];
 		this._y = v[1];
+		this._mag = this._calculateMagnitude();
 
 		return this;
 	}
@@ -157,10 +164,12 @@ export class Vec2 {
 	/**
 	 * Normalize to a unit vector.
 	 *
+	 * Note: this will return 0v as unit vector.
+	 *
 	 * @returns Vec2
 	 */
 	unit() {
-		this._x, (this._y = Math.SQRT1_2);
+		this._x = this._y = Math.SQRT1_2;
 
 		return this;
 	}
@@ -193,13 +202,10 @@ export class Vec2 {
 	 * @param v1 Vector
 	 * @returns Scalar value
 	 */
-	dot(v1: Vector2Like) {
+	dot(v1: Vector2Like | Vec2): number {
 		v1 = this._vectorize(v1);
 
-		let sx = this._x * v1[0];
-		let sy = this._y * v1[1];
-
-		return Math.hypot(sx, sy);
+		return this._x * v1[0] + this._y * v1[1];
 	}
 
 	/**
@@ -209,7 +215,7 @@ export class Vec2 {
 	 * @returns Scalar value
 	 * @see https://math.stackexchange.com/questions/3158634/
 	 */
-	cross(v1: Vector2Like) {
+	cross(v1: Vector2Like | Vec2): number {
 		// cross product does not exist in 2D, see: https://math.stackexchange.com/questions/3158634/
 		// rather, we will use wedge product
 		return this.wedge(v1);
@@ -221,7 +227,7 @@ export class Vec2 {
 	 * @param v1 Vector
 	 * @returns Scalar value
 	 */
-	wedge(v1: Vector2Like) {
+	wedge(v1: Vector2Like | Vec2): number {
 		v1 = this._vectorize(v1);
 
 		return this.x * v1[1] - this.y * v1[0];
@@ -233,10 +239,10 @@ export class Vec2 {
 	 * @param v1 Vector
 	 * @return distance
 	 */
-	distance(v1: Vector2Like): number {
+	distance(v1: Vector2Like | Vec2): number {
 		v1 = this._vectorize(v1);
 
-		return Math.hypot(this._x ** 2 - v1[0] ** 2, this._y ** 2 - v1[1] ** 2);
+		return Math.hypot(this._x - v1[0], this._y - v1[1]);
 	}
 
 	/**
@@ -288,7 +294,7 @@ export class Vec2 {
 	 * @param unit degree/radians
 	 * @returns angle
 	 */
-	between(a: Vector2Like | Axis2D, unit: 'deg' | 'rad' = 'rad') {
+	between(a: Vector2Like | Axis2D, unit: 'deg' | 'rad' = 'rad'): number {
 		let theta = 0;
 
 		// !0 => true, ![>0] => false
@@ -337,7 +343,7 @@ export class Vec2 {
 	 * @param v1 Vector
 	 * @returns Vec2
 	 */
-	max(v1: Vector2Like) {
+	max(v1: Vector2Like | Vec2) {
 		v1 = this._vectorize(v1);
 
 		this._x = Math.max(this._x, v1[0]);
@@ -352,7 +358,7 @@ export class Vec2 {
 	 * @param v1 Vector
 	 * @returns Vec2
 	 */
-	min(v1: Vector2Like) {
+	min(v1: Vector2Like | Vec2) {
 		v1 = this._vectorize(v1);
 
 		this._x = Math.min(this._x, v1[0]);
@@ -404,7 +410,7 @@ export class Vec2 {
 	 * @param max maximum vector
 	 * @returns Vec2
 	 */
-	clamp(min: Vector2Like, max: Vector2Like) {
+	clamp(min: Vector2Like | Vec2, max: Vector2Like | Vec2) {
 		min = this._vectorize(min);
 		max = this._vectorize(max);
 
@@ -424,7 +430,7 @@ export class Vec2 {
 	 * @param B Second Point
 	 * @returns Vec2
 	 */
-	segvec(A: Vector2Like, B: Vector2Like) {
+	segvec(A: Vector2Like | Vec2, B: Vector2Like | Vec2) {
 		A = this._vectorize(A);
 		B = this._vectorize(B);
 
@@ -440,7 +446,7 @@ export class Vec2 {
 	 * @param v Vector
 	 * @returns Vec2
 	 */
-	add(v: Vector2Like) {
+	add(v: Vector2Like | Vec2) {
 		v = this._vectorize(v);
 
 		this._x += v[0];
@@ -455,7 +461,7 @@ export class Vec2 {
 	 * @param v Vector
 	 * @returns Vec2
 	 */
-	sub(v: Vector2Like) {
+	sub(v: Vector2Like | Vec2) {
 		v = this._vectorize(v);
 
 		this._x -= v[0];
