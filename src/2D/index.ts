@@ -170,7 +170,7 @@ export class Vec2 {
 	 *
 	 * @returns Vec2
 	 */
-	antiparalell() {
+	antiparallel() {
 		this._x = -this._x;
 		this._y = -this._y;
 
@@ -179,12 +179,12 @@ export class Vec2 {
 
 	/**
 	 * Reverse the direction of all axis, such that it is anti-parallel
-	 * (alias function for {@link antiparalell})
+	 * (alias function for {@link antiparallel})
 	 *
 	 * @returns Vec2
 	 */
 	oppose() {
-		return this.antiparalell();
+		return this.antiparallel();
 	}
 
 	/**

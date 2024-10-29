@@ -167,7 +167,7 @@ export class VecN {
 	 *
 	 * @returns VecN
 	 */
-	antiparalell() {
+	antiparallel() {
 		for (let i = 0; i < this.dimensions; i++) {
 			this._coords[i] = -this._coords[i];
 		}
@@ -177,12 +177,12 @@ export class VecN {
 
 	/**
 	 * Reverse the direction of all axis, such that it is anti-parallel
-	 * (alias function for {@link antiparalell})
+	 * (alias function for {@link antiparallel})
 	 *
 	 * @returns VecN
 	 */
 	oppose() {
-		return this.antiparalell();
+		return this.antiparallel();
 	}
 
 	/**

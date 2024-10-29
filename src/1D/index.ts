@@ -100,7 +100,7 @@ export class Vec1 {
 	 *
 	 * @returns Vec1
 	 */
-	antiparalell() {
+	antiparallel() {
 		this._coord = -this._coord;
 
 		return this;
@@ -113,7 +113,7 @@ export class Vec1 {
 	 * @returns Vec1
 	 */
 	oppose() {
-		return this.antiparalell();
+		return this.antiparallel();
 	}
 
 	/**
