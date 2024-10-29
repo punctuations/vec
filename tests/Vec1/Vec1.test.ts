@@ -5,6 +5,14 @@ import { Vec1, Vec2, Vec3, VecN } from '../../src/index.ts';
 import { Matrix } from '../../src/math/matrix.ts';
 
 describe('Vec1', () => {
+    it('constructor', () => {
+        const v = new Vec1(1);
+        const u = new Vec1([1]);
+        expect(v).toBeInstanceOf(Vec1);
+        expect(u).toBeInstanceOf(Vec1);
+        expect(v).toEqual(u);
+    });
+
     it('get coords', () => {
         const v = new Vec1(1);
 		expect(v.coord).toEqual(1);
