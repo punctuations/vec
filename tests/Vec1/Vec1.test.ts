@@ -8,9 +8,16 @@ describe('Vec1', () => {
     it('constructor', () => {
         const v = new Vec1(1);
         const u = new Vec1([1]);
+        const x = new Vec1(Float32Array.of(1));
+        const y = new Vec1(Float64Array.of(1));
+
         expect(v).toBeInstanceOf(Vec1);
         expect(u).toBeInstanceOf(Vec1);
+        expect(x).toBeInstanceOf(Vec1);
+        expect(y).toBeInstanceOf(Vec1);
         expect(v).toEqual(u);
+        expect(v).toEqual(x);
+        expect(v).toEqual(y);
     });
 
     it('get coords', () => {
