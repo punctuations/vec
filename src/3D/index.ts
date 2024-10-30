@@ -74,7 +74,11 @@ export class Vec3 {
 		return Math.hypot(this._x, this._y, this._z);
 	}
 
-	private _vectorize(v: Vector3Like): Vector | [number, number, number] {
+	private _vectorize(
+		v: Vector3Like | Vec3,
+	): Vector | [number, number, number] {
+		if (v instanceof Vec3) return [v.x, v.y, v.z];
+
 		if (
 			!(v instanceof Float32Array) &&
 			!(v instanceof Float64Array) &&
@@ -155,7 +159,13 @@ export class Vec3 {
 	}
 
 	// https://stackoverflow.com/questions/16451723/get-coordinates-of-a-point-in-3d-space-from-angles-its-vector-makes-with-axis-an
-	set mag(value: { magnitude: number; theta?: number; phi?: number }) {
+	set mag(
+		value: number | { magnitude: number; theta?: number; phi?: number },
+	) {
+		if (typeof value === 'number') {
+			value = { magnitude: value, theta: 0, phi: 0 };
+		}
+
 		value.theta = value.theta ?? 0;
 		value.phi = value.phi ?? 0;
 
@@ -185,12 +195,14 @@ export class Vec3 {
 	 * @param v Vector
 	 * @returns Vec3
 	 */
-	copy(v: Vector3Like) {
+	copy(v: Vector3Like | Vec3) {
 		v = this._vectorize(v);
 
 		this._x = v[0];
 		this._y = v[1];
 		this._z = v[2];
+
+		this._mag = this._calculateMagnitude();
 
 		return this;
 	}
@@ -214,7 +226,8 @@ export class Vec3 {
 	 * @returns Vec3
 	 */
 	unit() {
-		this._x, this._y, (this._z = 1 / Math.sqrt(3));
+		this._x = this._y = this._z = 1 / Math.sqrt(3);
+		this._mag = this._calculateMagnitude();
 
 		return this;
 	}
@@ -239,7 +252,7 @@ export class Vec3 {
 	 * @returns Vec3
 	 */
 	oppose() {
-		this.antiparallel();
+		return this.antiparallel();
 	}
 
 	/**
@@ -248,14 +261,14 @@ export class Vec3 {
 	 * @param v1 Vector
 	 * @returns Scalar value
 	 */
-	dot(v1: Vector3Like) {
+	dot(v1: Vector3Like | Vec3): number {
 		v1 = this._vectorize(v1);
 
 		let sx = this._x * v1[0];
 		let sy = this._y * v1[1];
 		let sz = this._z * v1[2];
 
-		return Math.hypot(sx, sy, sz);
+		return sx + sy + sz;
 	}
 
 	/**
@@ -264,14 +277,14 @@ export class Vec3 {
 	 * @param v1 Vector
 	 * @returns new Vector
 	 */
-	cross(v1: Vector3Like): Vector {
+	cross(v1: Vector3Like | Vec3): Vec3 {
 		v1 = this._vectorize(v1);
 
-		let v2 = new Float64Array(3);
-
-		v2[0] = this._y * v1[2] - this._z * v1[1];
-		v2[1] = this._z * v1[0] - this._x * v1[2];
-		v2[2] = this._x * v1[1] - this._y * v1[0];
+		const v2 = new Vec3([
+			this._y * v1[2] - this._z * v1[1],
+			this._z * v1[0] - this._x * v1[2],
+			this._x * v1[1] - this._y * v1[0],
+		]);
 
 		return v2;
 	}
@@ -282,7 +295,7 @@ export class Vec3 {
 	 * @param v1 Vector
 	 * @returns new Matrix
 	 */
-	outer(v1: Vector3Like): Matrix {
+	outer(v1: Vector3Like | Vec3): Matrix {
 		v1 = this._vectorize(v1);
 
 		return new Matrix([
@@ -299,7 +312,7 @@ export class Vec3 {
 	 * @param v1 Vector
 	 * @returns new Matrix
 	 */
-	direct(v1: Vector3Like): Matrix {
+	direct(v1: Vector3Like | Vec3): Matrix {
 		return this.outer(v1);
 	}
 
@@ -309,13 +322,13 @@ export class Vec3 {
 	 * @param v1 Vector
 	 * @return distance
 	 */
-	distance(v1: Vector3Like): number {
+	distance(v1: Vector3Like | Vec3): number {
 		v1 = this._vectorize(v1);
 
 		return Math.hypot(
-			this._x ** 2 - v1[0] ** 2,
-			this._y ** 2 - v1[1] ** 2,
-			this._z ** 2 - v1[2] ** 2,
+			this._x - v1[0],
+			this._y - v1[1],
+			this._z - v1[2],
 		);
 	}
 
@@ -337,21 +350,22 @@ export class Vec3 {
 		let theta;
 
 		if (Array.isArray(angle)) {
-			theta = angle.length > 0
-				? unit.toLowerCase() == 'deg'
-					? (angle[0] * Math.PI) / 180
-					: angle[0]
-				: Math.atan2(this._y, this._x);
-			phi = angle.length == 2
-				? unit.toLowerCase() == 'deg'
-					? (angle[0] * Math.PI) / 180
-					: angle[1]
-				: Math.acos(this._z / this._mag);
+			theta = angle[0];
+			phi = phi ??
+				(angle.length == 2 ? angle[1] : Math.acos(this._z / this._mag));
+
+			if (unit.toLowerCase() == 'deg') {
+				theta *= Math.PI / 180;
+				phi *= Math.PI / 180;
+			}
 		} else {
-			theta = unit.toLowerCase() == 'deg'
-				? (angle * Math.PI) / 180
-				: angle;
+			theta = angle;
 			phi = phi ?? Math.acos(this._z / this._mag);
+
+			if (unit.toLowerCase() == 'deg') {
+				theta *= Math.PI / 180;
+				phi *= Math.PI / 180;
+			}
 		}
 
 		/*
@@ -374,7 +388,7 @@ export class Vec3 {
 	 * @returns Vec3
 	 */
 	rotate(theta?: number, phi?: number, unit: 'deg' | 'rad' = 'rad') {
-		theta = theta ?? 0;
+		theta = theta ?? Math.atan2(this._y, this._x);
 		phi = phi ?? Math.acos(this._z / this._mag);
 
 		if (unit.toLowerCase() == 'deg') {
@@ -398,7 +412,7 @@ export class Vec3 {
 	 * @param unit degree/radians
 	 * @returns angle
 	 */
-	between(a: Vector3Like | Axis, unit: 'deg' | 'rad' = 'rad') {
+	between(a: Vector3Like | Axis, unit: 'deg' | 'rad' = 'rad'): number {
 		let theta = 0;
 
 		// !0 => true, ![>0] => false
@@ -435,7 +449,7 @@ export class Vec3 {
 			a = this._vectorize(a);
 
 			// !0 => true, ![>0] => false
-			if (!a[0] || !a[1] || !a[2]) {
+			if (!a[0] && !a[1] && !a[2]) {
 				throw new Error('Vector cannot have magnitude of zero');
 			}
 
@@ -463,7 +477,7 @@ export class Vec3 {
 	 * @param B Second Point
 	 * @returns Vec2
 	 */
-	segvec(A: Vector3Like, B: Vector3Like) {
+	segvec(A: Vector3Like | Vec3, B: Vector3Like | Vec3) {
 		A = this._vectorize(A);
 		B = this._vectorize(B);
 
@@ -480,7 +494,7 @@ export class Vec3 {
 	 * @param v1 Vector
 	 * @returns Vec3
 	 */
-	max(v1: Vector3Like) {
+	max(v1: Vector3Like | Vec3) {
 		v1 = this._vectorize(v1);
 
 		this._x = Math.max(this._x, v1[0]);
@@ -496,7 +510,7 @@ export class Vec3 {
 	 * @param v1 Vector
 	 * @returns Vec3
 	 */
-	min(v1: Vector3Like) {
+	min(v1: Vector3Like | Vec3) {
 		v1 = this._vectorize(v1);
 
 		this._x = Math.min(this._x, v1[0]);
@@ -552,7 +566,7 @@ export class Vec3 {
 	 * @param max maximum vector
 	 * @returns Vec3
 	 */
-	clamp(min: Vector3Like, max: Vector3Like) {
+	clamp(min: Vector3Like | Vec3, max: Vector3Like | Vec3) {
 		min = this._vectorize(min);
 		max = this._vectorize(max);
 
@@ -571,7 +585,7 @@ export class Vec3 {
 	 * @param v Vector
 	 * @returns Vec3
 	 */
-	add(v: Vector3Like) {
+	add(v: Vector3Like | Vec3) {
 		v = this._vectorize(v);
 
 		this._x += v[0];
@@ -587,7 +601,7 @@ export class Vec3 {
 	 * @param v Vector
 	 * @returns Vec3
 	 */
-	sub(v: Vector3Like) {
+	sub(v: Vector3Like | Vec3) {
 		v = this._vectorize(v);
 
 		this._x -= v[0];
@@ -779,10 +793,6 @@ export class Vec3 {
 		yield this._x;
 		yield this._y;
 		yield this._z;
-	}
-
-	*[Symbol.length]() {
-		yield this.dimensions;
 	}
 }
 

@@ -1,6 +1,10 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@std/assert@^1.0.6": "1.0.6",
+    "jsr:@std/expect@*": "1.0.5",
+    "jsr:@std/internal@^1.0.4": "1.0.4",
+    "jsr:@std/testing@*": "1.0.3",
     "npm:@types/jest@^29.5.13": "29.5.13",
     "npm:@typescript-eslint/eslint-plugin@^5.3.1": "5.62.0_@typescript-eslint+parser@5.62.0__eslint@8.57.1__typescript@4.9.5_eslint@8.57.1_typescript@4.9.5",
     "npm:@typescript-eslint/parser@^5.3.1": "5.62.0_eslint@8.57.1_typescript@4.9.5",
@@ -11,6 +15,31 @@
     "npm:prettier@^2.4.1": "2.8.8",
     "npm:tsup@^5.7.0": "5.12.9_typescript@4.9.5_esbuild@0.14.54",
     "npm:typescript@^4.4.4": "4.9.5"
+  },
+  "jsr": {
+    "@std/assert@1.0.6": {
+      "integrity": "1904c05806a25d94fe791d6d883b685c9e2dcd60e4f9fc30f4fc5cf010c72207",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/expect@1.0.5": {
+      "integrity": "8c7ac797e2ffe57becc6399c0f2fd06230cb9ef124d45229c6e592c563824af1",
+      "dependencies": [
+        "jsr:@std/assert",
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/internal@1.0.4": {
+      "integrity": "62e8e4911527e5e4f307741a795c0b0a9e6958d0b3790716ae71ce085f755422"
+    },
+    "@std/testing@1.0.3": {
+      "integrity": "f98c2bee53860a5916727d7e7d3abe920dd6f9edace022e2d059f00d05c2cf42",
+      "dependencies": [
+        "jsr:@std/assert",
+        "jsr:@std/internal"
+      ]
+    }
   },
   "npm": {
     "@ampproject/remapping@2.3.0": {

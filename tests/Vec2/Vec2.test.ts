@@ -3,7 +3,6 @@ import { expect } from 'jsr:@std/expect';
 
 import { Vec1, Vec2, Vec3, VecN } from '../../src/index.ts';
 import { Matrix } from '../../src/math/matrix.ts';
-import { assertEquals } from 'jsr:@std/assert@^1.0.6/equals';
 
 const TOLERANCE = 0.0001;
 
