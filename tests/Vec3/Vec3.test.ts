@@ -325,13 +325,6 @@ describe('Vec3', () => {
         expect(v.transform(m)).toEqual(new VecN([1, 2, 6, 0]));
     });
 
-    // add projection
-    // it('projection', () => {
-    //     const v = new Vec3(1, 2, 3);
-    //     const u = new Vec3(4, 5, 6);
-    //     expect(v.project(u)).toEqual(new Vec3([0.25, 0.5, 0.75]));
-    // });
-
     it('flatten', () => {
         const v = new Vec3(2, 2, 3);
 
