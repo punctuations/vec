@@ -3,7 +3,12 @@ import { Vec2, Vector2Like } from '../2D/index.ts';
 import { Vec3, Vector, Vector3Like } from '../3D/index.ts';
 import { Matrix, type MatrixLike } from '../math/matrix.ts';
 
-export type VectorNLike = Vector | Vector2Like | Vector3Like | number[];
+export type VectorNLike =
+	| Vector
+	| Vector2Like
+	| Vector3Like
+	| number[]
+	| number;
 
 export class VecN {
 	private _coords: Float64Array;
@@ -19,6 +24,11 @@ export class VecN {
 	constructor(v?: VectorNLike) {
 		if (v === undefined) {
 			this._coords = new Float64Array([0, 0, 0, 0]);
+		} else if (typeof v == 'number') {
+			// number is dimensions
+			this._coords = new Float64Array(v).fill(0);
+
+			v = this._vectorize(v);
 		} else if (typeof v == 'object' && ('x' in v || 'i' in v)) {
 			if ('z' in v) {
 				// 3D x, y, z logic
@@ -62,7 +72,11 @@ export class VecN {
 		return Math.hypot(...Array.from(this._coords));
 	}
 
-	private _vectorize(v: VectorNLike): Vector | number[] {
+	private _vectorize(v: VectorNLike | VecN): Vector | number[] {
+		if (v instanceof VecN) return v.coords;
+
+		if (typeof v == 'number') return new Array(v).fill(0);
+
 		if (
 			!(v instanceof Float32Array) &&
 			!(v instanceof Float64Array) &&
@@ -130,10 +144,14 @@ export class VecN {
 	 * @param v Vector
 	 * @returns VecN
 	 */
-	copy(v: VectorNLike) {
+	copy(v: VectorNLike | VecN) {
 		v = this._vectorize(v);
 
 		this._coords = new Float64Array(v);
+
+		this._mag = this._calculateMagnitude();
+		// fucky type casting to update the dimension...
+		(this as any).length = (this as any).dimensions = v.length;
 
 		return this;
 	}
@@ -191,8 +209,14 @@ export class VecN {
 	 * @param v1 Vector
 	 * @returns Scalar value
 	 */
-	dot(v1: VectorNLike) {
+	dot(v1: VectorNLike | VecN) {
 		v1 = this._vectorize(v1);
+
+		if (this.length != v1.length) {
+			throw new RangeError(
+				'Cannot perform dot product on vectors with incompatible dimensions.',
+			);
+		}
 
 		let s = [];
 
@@ -200,7 +224,7 @@ export class VecN {
 			s.push(this._coords[i] * v1[i]);
 		}
 
-		return Math.hypot(...s);
+		return s.reduce((acc, a) => acc + a, 0);
 	}
 
 	// Cross product only exists in 3D and 7D, see: https://math.stackexchange.com/questions/720813/
@@ -223,13 +247,19 @@ export class VecN {
 	 * @param v1 Vector
 	 * @return distance
 	 */
-	distance(v1: VectorNLike): number {
+	distance(v1: VectorNLike | VecN): number {
 		v1 = this._vectorize(v1);
+
+		if (this.length != v1.length) {
+			throw new RangeError(
+				'Cannot calculate distance of vectors with incompatible dimensions.',
+			);
+		}
 
 		let s = [];
 
 		for (let i = 0; i < this.dimensions; i++) {
-			s.push(this._coords[i] ** 2 - v1[i] ** 2);
+			s.push(this._coords[i] - v1[i]);
 		}
 
 		return Math.hypot(...s);
@@ -241,8 +271,14 @@ export class VecN {
 	 * @param v1 Vector
 	 * @returns VecN
 	 */
-	max(v1: VectorNLike) {
+	max(v1: VectorNLike | VecN) {
 		v1 = this._vectorize(v1);
+
+		if (this.length != v1.length) {
+			throw new RangeError(
+				'Cannot perform action with vectors of incompatible dimensions.',
+			);
+		}
 
 		this._coords = this._coords.map((c, i) => Math.max(c, v1[i]));
 
@@ -255,8 +291,14 @@ export class VecN {
 	 * @param v1 Vector
 	 * @returns VecN
 	 */
-	min(v1: VectorNLike) {
+	min(v1: VectorNLike | VecN) {
 		v1 = this._vectorize(v1);
+
+		if (this.length != v1.length) {
+			throw new RangeError(
+				'Cannot perform action with vectors of incompatible dimensions.',
+			);
+		}
 
 		this._coords = this._coords.map((c, i) => Math.min(c, v1[i]));
 
@@ -328,6 +370,10 @@ export class VecN {
 		A = this._vectorize(A);
 		B = this._vectorize(B);
 
+		if (A.length != B.length) {
+			throw new RangeError('Dimensions must be the same');
+		}
+
 		this._coords = this._coords.map((_c, i) => B[i] - A[i]);
 
 		return this;
@@ -339,8 +385,12 @@ export class VecN {
 	 * @param v Vector
 	 * @returns VecN
 	 */
-	add(v: VectorNLike) {
+	add(v: VectorNLike | VecN) {
 		v = this._vectorize(v);
+
+		if (this.length != v.length) {
+			throw new RangeError('Dimensions must be the same');
+		}
 
 		this._coords = this._coords.map((c, i) => c + v[i]);
 
@@ -353,7 +403,7 @@ export class VecN {
 	 * @param v Vector
 	 * @returns VecN
 	 */
-	sub(v: VectorNLike) {
+	sub(v: VectorNLike | VecN) {
 		v = this._vectorize(v);
 
 		this._coords = this._coords.map((c, i) => c - v[i]);

@@ -1,7 +1,10 @@
+import type { VecN } from '../index.ts';
 import { VectorNLike } from '../N/index.ts';
 
 // 2D, 3D, ..., nD
-export const _vectorizeLike = (v: VectorNLike): number[] => {
+export const _vectorizeLike = (v: VectorNLike | VecN): number[] => {
+	if (typeof v == 'number') return new Array(v);
+
 	if (
 		!(v instanceof Float32Array) &&
 		!(v instanceof Float64Array) &&
