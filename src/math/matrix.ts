@@ -1,6 +1,8 @@
 /* <-- ALL WIP --> */
 export type MatrixLike = number[][] | Float32Array[] | Float64Array[];
 
+import { factorial } from './util.ts';
+
 export class Matrix {
 	private _rows: number;
 	private _cols: number;
@@ -30,9 +32,8 @@ export class Matrix {
 
 			// check if all rows have the same number of columns
 			if (
-				!matrix.every(
-					(row: number[] | Float32Array | Float64Array) =>
-						row.length === this._cols,
+				matrix.every((row: number[] | Float32Array | Float64Array) =>
+					row.length === matrix.length
 				)
 			) {
 				// matrix is square (2x2, 3x3, 4x4)
@@ -63,8 +64,40 @@ export class Matrix {
 	}
 
 	private _determinant(m: MatrixLike): number {
-		// TODO(@punctuations): implement matrix determinant
-		return m[0][0];
+		// if matrix is 1x1
+		if (m.length === 1) {
+			return m[0][0];
+		}
+
+		// if matrix is 2x2
+		if (m.length === 2) {
+			return m[0][0] * m[1][1] - m[0][1] * m[1][0];
+		}
+
+		// cofactor expansion
+		let det = 0;
+
+		// Loop through the first row to apply cofactor expansion
+		for (let col = 0; col < m.length; col++) {
+			// Create the minor matrix by excluding the current row and column
+			const minor = this._minor(m, 0, col);
+
+			// Apply the cofactor expansion formula: det(A) = Σ (-1)^(i+j) * A(i,j) * det(minor)
+			const cofactor = Math.pow(-1, col) * m[0][col] *
+				this._determinant(minor);
+			det += cofactor;
+		}
+
+		return det;
+	}
+
+	private _minor(m: MatrixLike, i: number, j: number): MatrixLike {
+		// Create the minor matrix by excluding the current row and column
+		const minor = m.filter((_, row) => row !== i).map((row) =>
+			Array.from(row).filter((_, col) => col !== j)
+		);
+
+		return minor;
 	}
 
 	get rows() {
@@ -132,7 +165,7 @@ export class Matrix {
 	 * @returns new Matrix
 	 */
 	clone() {
-		new Matrix(this._matrix);
+		return new Matrix(this._matrix);
 	}
 
 	/**
@@ -141,7 +174,7 @@ export class Matrix {
 	 * @returns Matrix
 	 */
 	zero() {
-		this._setScalar(0);
+		return this._setScalar(0);
 	}
 
 	/**
@@ -156,6 +189,17 @@ export class Matrix {
 		for (let i = 0; i < this._rows; i++) {
 			this._matrix[i][i] = 1;
 		}
+
+		return this;
+	}
+
+	/**
+	 * Apply scalar (λ) to matrix.
+	 *
+	 * @param scalar scalar number
+	 */
+	scale(lambda: number): Matrix {
+		this._setScalar(lambda);
 
 		return this;
 	}
@@ -249,12 +293,77 @@ export class Matrix {
 	}
 
 	/**
+	 * Compute the minor of a square matrix.
+	 *
+	 * @param i row coordinate of matrix
+	 * @param j column coordinate of matrix
+	 * @returns Matrix
+	 */
+	minor(i: number, j: number): Matrix {
+		if (!this._isSquare) {
+			throw new Error('Matrix must be square');
+		}
+
+		return new Matrix(this._minor(this._matrix, i, j));
+	}
+
+	/**
+	 * Compute the adjoint of a square matrix.
+	 *
+	 * @returns Matrix
+	 */
+	adjoint(): Matrix {
+		if (!this._isSquare) {
+			throw new Error('Matrix must be square');
+		}
+
+		let adjoint: number[][] = Array(this._rows).fill(null).map(() =>
+			Array(this._cols).fill(0)
+		);
+
+		for (let i = 0; i < this._rows; i++) {
+			for (let j = 0; j < this._cols; j++) {
+				adjoint[j][i] = Math.pow(-1, i + j) *
+					this._determinant(this._minor(this._matrix, i, j));
+			}
+		}
+
+		return new Matrix(adjoint);
+	}
+
+	/**
+	 * Inverse of a square matrix.
+	 *
+	 * @returns Matrix
+	 */
+	inverse(): Matrix {
+		// TODO(@punctuations): fix inverse, currently broken (could be issue w/ det, adj, minor).
+		if (!this._isSquare) {
+			throw new Error('Matrix must be square');
+		}
+
+		const det = this.determinant();
+		if (det === 0) {
+			throw new Error('Matrix is not invertible');
+		}
+
+		const adjoint = this.adjoint();
+		adjoint.scale(1 / det);
+
+		return adjoint;
+	}
+
+	/**
 	 * Add two matrices. Sum is this matrix.
 	 *
 	 * @param m1 Matrix
 	 * @returns Matrix
 	 */
-	add(m1: MatrixLike): Matrix {
+	add(m1: Matrix | MatrixLike): Matrix {
+		if (m1 instanceof Matrix) {
+			m1 = m1._matrix;
+		}
+
 		if (this._isSquare) {
 			for (let i = 0; i < m1.length; i++) {
 				for (let j = 0; m1[0].length; j++) {
@@ -274,7 +383,11 @@ export class Matrix {
 	 * @param m1 Matrix
 	 * @returns Matrix
 	 */
-	subtract(m1: MatrixLike): Matrix {
+	subtract(m1: Matrix | MatrixLike): Matrix {
+		if (m1 instanceof Matrix) {
+			m1 = m1._matrix;
+		}
+
 		if (this._isSquare) {
 			for (let i = 0; i < m1.length; i++) {
 				for (let j = 0; m1[0].length; j++) {
@@ -381,20 +494,106 @@ export class Matrix {
 
 	// ->> special functions
 
-	// new Matrix([[0, 1], [-1, 0]]).pow(2) => 2^(A), where A is the matrix
-	pow(base: number): number {
-		// TODO(@punctuations): implement matrix exponentiation
-		return base;
-	}
-
-	// e^[[0,-1],[1,0]] || e^(A)
-	exp(): number {
-		// TODO(@punctuations): implement e^(A) exponentiation
+	/**
+	 * base of n, raised to the power of the matrix: n^(A)
+	 *
+	 * @param base base of the exponentiation
+	 * @param k degree of polynomial {@link https://en.wikipedia.org/wiki/Pad%C3%A9_approximant}
+	 * @returns Matrix
+	 */
+	pow(base: number, k?: number): Matrix {
+		// check for errors before applying scalar
 		if (!this._isSquare) {
 			throw new RangeError('Matrix must be square for exp.');
 		}
 
-		return 0;
+		k = k ?? 1;
+
+		if (typeof k !== 'undefined' && k <= 0) {
+			throw new RangeError('Degree of polynomial must be > 0.');
+		}
+
+		// power of a normal base is same as: e^(Alog(n)) = n^(A)
+		// move into form of Alog(n), we can use exp.
+		// n^(A) = e^(Alog(n)) = this.exp(Alog(n))
+		this._setScalar(Math.log(base));
+
+		return this.exp(k);
+	}
+
+	/**
+	 * Matrix exponential (e^A), using Padé approximant.
+	 *
+	 * @param k degree of polynomial {@link https://en.wikipedia.org/wiki/Pad%C3%A9_approximant}
+	 * @returns Matrix
+	 */
+	exp(k?: number): Matrix {
+		if (!this._isSquare) {
+			throw new RangeError('Matrix must be square for exp.');
+		}
+
+		k = k ?? 1;
+
+		if (typeof k !== 'undefined' && k <= 0) {
+			throw new RangeError('Degree of polynomial must be > 0.');
+		}
+
+		// Uses Padé approximant
+		// e^A = (I + A + A^2/2! + A^3/3! + ... + A^n/n!) for n -> ∞
+		// e^A ~= (I + A + A^2/2! + A^3/3! + ... + A^k/k!)/(I - A + A^2/2! - A^3/3! + ... + (-1)^k * A^k/k!)
+		// e^A ~= P_k(A)/Q_k(A)
+
+		// since A is a square, rows = cols.
+		let I: number[][] = Array(this._rows).fill(null).map((_, i) =>
+			Array(this._cols).fill(0).map((_, j) => (i === j ? 1 : 0))
+		);
+
+		// if k is not specified (undefined), use the default Padé approximant k = 1
+		if (k === 1) {
+			// no special polynomial degree
+			// e^A = (I + A/2)/(I-A/2)
+
+			this._setScalar(0.5);
+
+			const numerator = this._matrix.map((row, i) =>
+				row.map((a, j) => {
+					return I[i][j] + a;
+				})
+			) as MatrixLike;
+
+			const denominator = this._matrix.map((row, i) =>
+				row.map((a, j) => {
+					return I[i][j] - a;
+				})
+			) as MatrixLike;
+
+			this._set(numerator);
+			this.divide(denominator);
+
+			return this;
+		}
+
+		// for k > 1, use the general Padé approximant, make two new matrix instances to add the terms
+		const numerator = new Matrix(I).add(this._matrix); // P_k(A)
+		const denominator = new Matrix(I).subtract(this._matrix); // Q_k(A)
+
+		for (let i = 2; i <= k; i++) {
+			// e^A = (I + A + A^2/2! + A^3/3! + ... + A^k/k!) for n -> ∞
+			const A: MatrixLike = this._matrix.map((row, _i) =>
+				row.map((a, _j) => {
+					return (a ^ k) / factorial(k + 1); // A^k/(k+1)!
+				})
+			) as MatrixLike;
+
+			numerator.add(A);
+			// kinda fucked way of adding (-1)^k, but what can you do
+			if (i % 2 === 0) denominator.add(A); // (-1)^k where k is even, so add
+			else denominator.subtract(A); // (-1)^k where k is odd, so subtract
+		}
+
+		this._set(numerator); // P_k(A)
+		this.divide(denominator); // P_k(A)/Q_k(A)
+		return this;
 	}
 
 	// not sure what the iterable should be yet **
