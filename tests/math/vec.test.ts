@@ -127,39 +127,39 @@ describe('Vector Spans', () => {
 	});
 });
 
-describe('Vector colinearity', () => {
-	it('colinear to span of v3', () => {
+describe('Vector collinearity', () => {
+	it('collinear to span of v3', () => {
 		let span = vec().span([1, 1, 1]);
 
-		expect(vec().colinear(span, [2, 2, 2])).toBeTruthy();
+		expect(vec().collinear(span, [2, 2, 2])).toBeTruthy();
 	});
 
-	it('noncolinear to span of v3', () => {
+	it('noncollinear to span of v3', () => {
 		let span = vec().span([1, 1, 1]);
 
-		expect(vec().colinear(span, [3, 2, 5])).toBeFalsy();
+		expect(vec().collinear(span, [3, 2, 5])).toBeFalsy();
 	});
 
-	it('colinear to span of v2', () => {
+	it('collinear to span of v2', () => {
 		let span = vec().span([1, 1]);
 
-		expect(vec().colinear(span, [2, 2])).toBeTruthy();
+		expect(vec().collinear(span, [2, 2])).toBeTruthy();
 	});
 
-	it('noncolinear to span of v3', () => {
+	it('noncollinear to span of v3', () => {
 		let span = vec().span([1, 1]);
 
-		expect(vec().colinear(span, [3, 5])).toBeFalsy();
+		expect(vec().collinear(span, [3, 5])).toBeFalsy();
 	});
 
-	it('colinear to vector', () => {
+	it('collinear to vector', () => {
 		let v1 = new Vec3([1, 5, 4]);
 		let v2 = new Vec3([15, 75, 60]);
 
-		expect(vec().colinear(v1, v2)).toBeTruthy();
+		expect(vec().collinear(v1, v2)).toBeTruthy();
 	});
 
-	it('colinear to vector-like', () => {
-		expect(vec().colinear([200, 200], [2, 2])).toBeTruthy();
+	it('collinear to vector-like', () => {
+		expect(vec().collinear([200, 200], [2, 2])).toBeTruthy();
 	});
 });

@@ -63,13 +63,13 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 		},
 
 		/**
-		 * Determines colinearity of two vectors. (Or if a vector is in the span of another vector)
+		 * Determines collinearity of two vectors. (Or if a vector is in the span of another vector)
 		 *
 		 * @param span span, or vector to compare against
 		 * @param v vector
 		 * @returns boolean
 		 */
-		colinear: (span: VectorNLike | VecN, v: VectorNLike): boolean => {
+		collinear: (span: VectorNLike | VecN, v: VectorNLike): boolean => {
 			if (span instanceof VecN) span = span.coords;
 
 			span = _vectorizeLike(span);
