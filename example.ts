@@ -22,9 +22,9 @@ let u = new Vec3([1, 1, 1]);
 
 let span = vec().span(u); // span of u
 
-vec().colinear(span, [2, 2, 2]); // true
+vec().collinear(span, [2, 2, 2]); // true
 
 let zeroVector = vec().zero(3); // [0, 0, 0]
 
 // to implement
-// vec().colinear([[1, 0], [0, 1]], [1, 6]); // true
+// vec().collinear([[1, 0], [0, 1]], [1, 6]); // true
