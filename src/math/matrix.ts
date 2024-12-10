@@ -205,6 +205,24 @@ export class Matrix {
 	}
 
 	/**
+  * Column space of matrix.
+  *
+  * @returns VecN[] | Vec1[] | Vec2[] | Vec3[]
+  */
+	col(): VecN[] | Vec1[] | Vec2[] | Vec3[] {
+		// ...
+	}
+
+	/**
+  * Range of the matrix.
+  *
+  * @returns VecN[] | Vec1[] | Vec2[] | Vec3[]
+  */
+	range(): VecN[] | Vec1[] | Vec2[] | Vec3[] {
+		// ...
+	}
+
+	/**
 	 * Transpose matrix (i.e. swap rows -> cols)
 	 *
 	 * @returns Matrix
