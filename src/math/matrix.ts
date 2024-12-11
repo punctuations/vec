@@ -2,6 +2,10 @@
 export type MatrixLike = number[][] | Float32Array[] | Float64Array[];
 
 import { factorial } from './util.ts';
+import { Vec1 } from '../1D/index.ts';
+import { Vec2 } from '../2D/index.ts';
+import { Vec3 } from '../3D/index.ts';
+import { VecN } from '../N/index.ts';
 
 export class Matrix {
 	private _rows: number;
