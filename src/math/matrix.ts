@@ -263,7 +263,7 @@ export class Matrix {
 			const buffer = [];
 			
 			for (let i; i++; i<this.cols) {
-				buffer.push(m[j][i]
+				buffer.push(m[j][i]);
 			}
 			
 			if (buffer.length == 1) {
