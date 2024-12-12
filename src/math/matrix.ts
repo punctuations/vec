@@ -242,7 +242,7 @@ export class Matrix {
 			if (buffer.length == 3) {
 				col_space.push(Vec3(buffer));
 				continue;
-				}
+			}
 
 			col_space.push(VecN(buffer));
 		}
