@@ -213,7 +213,7 @@ export class Matrix {
 	 *
 	 * @returns VecN[] | Vec1[] | Vec2[] | Vec3[]
 	 */
-	col(): VecN[] | Vec1[] | Vec2[] | Vec3[] {
+	col(): (VecN | Vec1 | Vec2 | Vec3)[] {
 		// TODO(@punctuations): add column space function
 
 		// make an array of this.cols length, with vectors in this.rows dim.
@@ -222,30 +222,32 @@ export class Matrix {
 		const col_space = [];
 
 		// dimension is higher than 3.
-		for (let i; i++; i < this.cols) {
+		for (let i = 0; i++; i < this.cols) {
 			const buffer = [];
 
-			for (let j; j++; j < this.rows) {
+			for (let j = 0; j++; j < this.rows) {
 				buffer.push(m[i][j]);
 			}
 
 			if (buffer.length == 1) {
-				col_space.push(Vec1(buffer));
+				col_space.push(new Vec1(buffer as [number]));
 				continue;
 			}
 
 			if (buffer.length == 2) {
-				col_space.push(Vec2(buffer));
+				col_space.push(new Vec2(buffer as [number, number]));
 				continue;
 			}
 
 			if (buffer.length == 3) {
-				col_space.push(Vec3(buffer));
+				col_space.push(new Vec3(buffer as [number, number, number]));
 				continue;
 			}
 
-			col_space.push(VecN(buffer));
+			col_space.push(new VecN(buffer));
 		}
+
+		return col_space;
 	}
 
 	/**
@@ -253,36 +255,38 @@ export class Matrix {
 	 *
 	 * @returns VecN[] | Vec1[] | Vec2[] | Vec3[]
 	 */
-	range(): VecN[] | Vec1[] | Vec2[] | Vec3[] {
+	range(): (VecN | Vec1 | Vec2 | Vec3)[] {
 		// TODO(@punctuations): add range function
 		const m = this._matrix;
 
 		const range = [];
 
-		for (let j; j++; j < this.rows) {
+		for (let j = 0; j++; j < this.rows) {
 			const buffer = [];
 
-			for (let i; i++; i < this.cols) {
+			for (let i = 0; i++; i < this.cols) {
 				buffer.push(m[j][i]);
 			}
 
 			if (buffer.length == 1) {
-				range.push(Vec1(buffer));
+				range.push(new Vec1(buffer as [number]));
 				continue;
 			}
 
 			if (buffer.length == 2) {
-				range.push(Vec2(buffer));
+				range.push(new Vec2(buffer as [number, number]));
 				continue;
 			}
 
 			if (buffer.length == 3) {
-				range.push(Vec3(buffer));
+				range.push(new Vec3(buffer as [number, number, number]));
 				continue;
 			}
 
-			range.push(VecN(buffer));
+			range.push(new VecN(buffer));
 		}
+
+		return range;
 	}
 
 	/**
