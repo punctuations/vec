@@ -10,7 +10,7 @@ export const _vectorizeLike = (v: VectorNLike | VecN): number[] => {
 		!(v instanceof Float64Array) &&
 		!Array.isArray(v)
 	) {
-		if ('x' in v && 'y' in v && 'z'! in v) {
+		if ('x' in v && 'y' in v && !('z' in v)) {
 			// 2D
 			return [v.x, v.y];
 		} else {

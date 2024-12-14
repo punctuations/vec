@@ -354,6 +354,12 @@ export class Matrix {
 		return new Matrix(m);
 	}
 
+	// basis(): (Vec1 | Vec2 | Vec3 | VecN)[] {
+	// 	const col_vectors = this.col();
+
+	// 	return col_vectors;
+	// }
+
 	/**
 	 * Compute the determinant of a square matrix.
 	 *

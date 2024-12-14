@@ -3,6 +3,9 @@ import { Vec3, Vector, Vector3Like } from '../3D/index.ts';
 import { Vec1 } from '../1D/index.ts';
 import { VecN, VectorNLike } from '../N/index.ts';
 import { _vectorizeLike } from './util.ts';
+import { Matrix } from './matrix.ts';
+
+type Span = { basis: (VecN | Vec1 | Vec2 | Vec3)[]; dimension: number };
 
 export const vec = (domain?: [number, number], range?: [number, number]) => {
 	domain = domain || [2, 3];
@@ -79,17 +82,18 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 		 * @param v vector or matrix
 		 * @returns VecN
 		 */
-		span: (v: VectorNLike): VecN => {
-			// TODO(@punctuations): implement matrix span
+		span: (
+			v: VectorNLike | Matrix,
+		): Span => {
+			if (v instanceof Matrix) {
+				// would be nice to calculate basis on the fly
+				//TODO(@punctuations)
+				const basis = v.col();
 
-			// dont know what to return a span as, since span([[1, 0], [0, 1]]) is whole plane in R^2
-			/* for matricies like [[0, 1], [1, 0]]
-			 *      two column vectors c_1[0, 1] + c_2[1, 0] = [c_1, c_2] which is all vectors in R^2
-			 *
-			 *      so maybe make an array of [1, 2] for mod values to compare against for each row of vector in dimension R^n
-			 */
-
-			return new VecN(v);
+				return { basis, dimension: basis.length };
+			} else {
+				return { basis: [new VecN(v)], dimension: 1 };
+			}
 		},
 
 		/**
@@ -99,8 +103,31 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 		 * @param v vector
 		 * @returns boolean
 		 */
-		collinear: (span: VectorNLike | VecN, v: VectorNLike): boolean => {
-			if (span instanceof VecN) span = span.coords;
+		collinear: (
+			span: VectorNLike | VecN | Span,
+			v: VectorNLike,
+		): boolean => {
+			if (
+				span instanceof VecN || span instanceof Vec1 ||
+				span instanceof Vec2 || span instanceof Vec3
+			) span = span.coords;
+			else if (
+				typeof span === 'object' && !Array.isArray(span) &&
+				span !== null
+			) {
+				if (!('basis' in span)) {
+					throw new TypeError(`Span (${span}) must include basis.`);
+				}
+
+				span = span.basis.map((v) =>
+					v instanceof VecN ? v : v.toVecN()
+				).reduce(
+					(acc, current) => acc.add(current),
+					span.basis[0] instanceof VecN
+						? span.basis[0]
+						: span.basis[0].toVecN(),
+				).coords;
+			}
 
 			span = _vectorizeLike(span);
 			v = _vectorizeLike(v);
@@ -119,6 +146,7 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 			for (let i = 0; i < span.length; i++) {
 				if (i == index) continue; // Skip the reference element
 				if (span[i] / v[i] !== gcf) return false; // if not all same ratio, then not collinear
+
 				continue;
 			}
 

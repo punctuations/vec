@@ -44,6 +44,10 @@ export class Vec1 {
 		}
 	}
 
+	get coords(): number {
+		return this._coord;
+	}
+
 	get coord(): number {
 		return this._coord;
 	}
@@ -285,6 +289,15 @@ export class Vec1 {
 	 */
 	extend(): Vec2 {
 		return new Vec2(this._coord, 0);
+	}
+
+	/**
+	 * Converts the current vector into VecN
+	 *
+	 * @returns VecN
+	 */
+	toVecN(): VecN {
+		return new VecN([this._coord]);
 	}
 
 	*[Symbol.iterator]() {

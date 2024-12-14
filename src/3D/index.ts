@@ -683,6 +683,15 @@ export class Vec3 {
 		return new Vec2(tx, ty);
 	}
 
+	/**
+	 * Converts the current vector into VecN
+	 *
+	 * @returns VecN
+	 */
+	toVecN(): VecN {
+		return new VecN([this._x, this._y, this._z]);
+	}
+
 	*[Symbol.iterator]() {
 		yield this._x;
 		yield this._y;

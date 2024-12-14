@@ -3,6 +3,7 @@ import { expect } from 'jsr:@std/expect';
 
 import { vec, Vec2, Vec3 } from '../../src/index.ts';
 import { VecN } from '../../src/N/index.ts';
+import { Matrix } from '../../src/math/matrix.ts';
 
 function expectVecN(result: VecN | Error): VecN {
 	if (result instanceof Error) {
@@ -120,18 +121,21 @@ describe('Vector Spans', () => {
 	it('Span of v3 = [1, 1, 1]', () => {
 		let v3 = new Vec3([1, 1, 1]);
 
-		expect(vec().span(v3).coords).toEqual([1, 1, 1]);
+		expect(vec().span(v3)).toEqual({ basis: [new VecN([1, 1, 1])], dimension: 1});
 	});
 
 	it('Span of v2 = [1, 1]', () => {
 		let v2 = new Vec2([1, 1]);
 
-		expect(vec().span(v2).coords).toEqual([1, 1]);
+		expect(vec().span(v2)).toEqual({ basis: [new VecN([1, 1])], dimension: 1 });
 	});
 
-	// TODO(@punctuations)
 	it('Span of matrix', () => {
-		expect(true).toEqual(true);
+		let m = new Matrix([[1, 0], [0, 1]]);
+
+		const span = vec().span(m);
+
+		expect(span).toEqual({ basis: [new Vec2([1, 0]), new Vec2([0, 1])], dimension: 2})
 	});
 });
 
