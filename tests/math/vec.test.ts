@@ -108,6 +108,14 @@ describe('Vector Scalar Division', () => {
 	});
 });
 
+describe('From Array', () => {
+	it('from array to vec', () => {
+		const vecArray = vec().fromArray([1, 2, 3, 4, 5, 6], 3);
+
+		expect(vecArray).toEqual([new Vec3(1, 2, 3), new Vec3(4, 5, 6)])
+	});
+})
+
 describe('Vector Spans', () => {
 	it('Span of v3 = [1, 1, 1]', () => {
 		let v3 = new Vec3([1, 1, 1]);

@@ -1,5 +1,6 @@
-import { Vector2Like } from '../2D/index.ts';
-import { Vector3Like } from '../3D/index.ts';
+import { Vec2, Vector2Like } from '../2D/index.ts';
+import { Vec3, Vector, Vector3Like } from '../3D/index.ts';
+import { Vec1 } from '../1D/index.ts';
 import { VecN, VectorNLike } from '../N/index.ts';
 import { _vectorizeLike } from './util.ts';
 
@@ -41,6 +42,35 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 
 		divide: (v1: Vector2Like | Vector3Like, s: number): VecN => {
 			return new VecN(v1).divide(s);
+		},
+
+		fromArray: (
+			buffer: number[] | Vector,
+			stride: number,
+		): (Vec1 | Vec2 | Vec3 | VecN)[] => {
+			if (buffer.length % stride !== 0) {
+				throw new Error(
+					`Buffer length (${buffer.length}) is not divisible by stride (${stride}).`,
+				);
+			}
+
+			const vecBuffer = [];
+
+			for (let i = 0; i < buffer.length; i += stride) {
+				if (stride == 1) vecBuffer.push(new Vec1(buffer[i]));
+				else if (stride == 2) {
+					vecBuffer.push(new Vec2(buffer[i], buffer[i + 1]));
+				} else if (stride == 3) {
+					vecBuffer.push(
+						new Vec3(buffer[i], buffer[i + 1], buffer[i + 2]),
+					);
+				} else {
+					const components = buffer.slice(i, i + stride);
+					vecBuffer.push(new VecN(components));
+				}
+			}
+
+			return vecBuffer;
 		},
 
 		/**
