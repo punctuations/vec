@@ -214,18 +214,16 @@ export class Matrix {
 	 * @returns VecN[] | Vec1[] | Vec2[] | Vec3[]
 	 */
 	col(): (VecN | Vec1 | Vec2 | Vec3)[] {
-		// TODO(@punctuations): add column space function
-
 		// make an array of this.cols length, with vectors in this.rows dim.
 		const m = this._matrix;
 
 		const col_space = [];
 
 		// dimension is higher than 3.
-		for (let i = 0; i++; i < this.cols) {
+		for (let i = 0; i < this.cols; i++) {
 			const buffer = [];
 
-			for (let j = 0; j++; j < this.rows) {
+			for (let j = 0; j < this.rows; j++) {
 				buffer.push(m[i][j]);
 			}
 
@@ -256,34 +254,26 @@ export class Matrix {
 	 * @returns VecN[] | Vec1[] | Vec2[] | Vec3[]
 	 */
 	range(): (VecN | Vec1 | Vec2 | Vec3)[] {
-		// TODO(@punctuations): add range function
 		const m = this._matrix;
 
-		const range = [];
+		const range: (VecN | Vec1 | Vec2 | Vec3)[] = [];
 
-		for (let j = 0; j++; j < this.rows) {
-			const buffer = [];
+		for (let j = 0; j < this.rows; j++) {
+			const buffer: number[] = [];
 
-			for (let i = 0; i++; i < this.cols) {
-				buffer.push(m[j][i]);
+			for (let i = 0; i < this.cols; i++) {
+				buffer.push(m[i][j]);
 			}
 
 			if (buffer.length == 1) {
 				range.push(new Vec1(buffer as [number]));
-				continue;
-			}
-
-			if (buffer.length == 2) {
+			} else if (buffer.length == 2) {
 				range.push(new Vec2(buffer as [number, number]));
-				continue;
-			}
-
-			if (buffer.length == 3) {
+			} else if (buffer.length == 3) {
 				range.push(new Vec3(buffer as [number, number, number]));
-				continue;
+			} else {
+				range.push(new VecN(buffer));
 			}
-
-			range.push(new VecN(buffer));
 		}
 
 		return range;
