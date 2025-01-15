@@ -155,7 +155,14 @@ export class Matrix {
 		return this._matrix;
 	}
 
-	get dimensions(): number[] {
+	/**
+	* Get transpose of matrix
+	*/
+	get T(): number[] {
+		return this.transpose();
+	}
+
+	get shape(): number[] {
 		return this._dims;
 	}
 
