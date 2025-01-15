@@ -488,6 +488,16 @@ export class Matrix {
 	}
 
 	/**
+	* Alias of {@link subtract}
+	*
+	* @param m1 Matrix
+	* @returns Matrix
+	*/
+	sub(m1: Matrix | MatrixLike): Matrix {
+		return this.subtract(m1);
+	}
+
+	/**
 	 * Matrix multiplication. Product is this matrix.
 	 *
 	 * @see https://en.wikipedia.org/wiki/Matrix_multiplication
@@ -528,6 +538,16 @@ export class Matrix {
 		return this;
 	}
 
+	/*
+	* Alias of {@link multiply}
+	*
+	* @param m1 Matrix
+	* @returns Matrix
+	*/
+	mul(m1: Matrix | MatrkxLike) {
+		return this.multiply(m1);
+	}
+
 	/**
 	 * Matrix division. Quotient is this matrix.
 	 *
@@ -563,6 +583,16 @@ export class Matrix {
 
 		this._set(A);
 		return this;
+	}
+
+	/*
+	* Alias of {@link divide}
+	*
+	* @param m1 Matrix
+	* @returns Matrix 
+	*/
+	div(m1: Matrix | MatrixLike) {
+		return this.divide(m1);
 	}
 
 	/**
