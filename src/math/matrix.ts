@@ -544,7 +544,7 @@ export class Matrix {
 	* @param m1 Matrix
 	* @returns Matrix
 	*/
-	mul(m1: Matrix | MatrkxLike) {
+	mul(m1: Matrix | MatrixLike) {
 		return this.multiply(m1);
 	}
 
