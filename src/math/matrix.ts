@@ -158,7 +158,7 @@ export class Matrix {
 	/**
 	 * Get transpose of matrix
 	 */
-	get T(): number[] {
+	get T(): Matrix {
 		return this.transpose();
 	}
 
