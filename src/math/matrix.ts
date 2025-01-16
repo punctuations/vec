@@ -156,8 +156,8 @@ export class Matrix {
 	}
 
 	/**
-	* Get transpose of matrix
-	*/
+	 * Get transpose of matrix
+	 */
 	get T(): number[] {
 		return this.transpose();
 	}
@@ -488,11 +488,11 @@ export class Matrix {
 	}
 
 	/**
-	* Alias of {@link subtract}
-	*
-	* @param m1 Matrix
-	* @returns Matrix
-	*/
+	 * Alias of {@link subtract}
+	 *
+	 * @param m1 Matrix
+	 * @returns Matrix
+	 */
 	sub(m1: Matrix | MatrixLike): Matrix {
 		return this.subtract(m1);
 	}
@@ -539,11 +539,11 @@ export class Matrix {
 	}
 
 	/*
-	* Alias of {@link multiply}
-	*
-	* @param m1 Matrix
-	* @returns Matrix
-	*/
+	 * Alias of {@link multiply}
+	 *
+	 * @param m1 Matrix
+	 * @returns Matrix
+	 */
 	mul(m1: Matrix | MatrixLike) {
 		return this.multiply(m1);
 	}
@@ -586,11 +586,11 @@ export class Matrix {
 	}
 
 	/*
-	* Alias of {@link divide}
-	*
-	* @param m1 Matrix
-	* @returns Matrix 
-	*/
+	 * Alias of {@link divide}
+	 *
+	 * @param m1 Matrix
+	 * @returns Matrix
+	 */
 	div(m1: Matrix | MatrixLike) {
 		return this.divide(m1);
 	}
