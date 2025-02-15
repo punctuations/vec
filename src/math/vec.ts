@@ -161,18 +161,38 @@ export const vec = () => {
 		},
 
 		/**
-		 * Linearly spaced vector/array.
+		 * Linearly spaced array.
 		 *
 		 * @param start number to start from
 		 * @param stop number to stop at
 		 * @param num amount of numbers
-		 * @returns VecN
+		 * @returns Float64Array
 		 */
-		linspace: (start: number, stop: number, num: number): VecN => {
-			const step = (stop - start) / (num - 1);
-			const vec = Array(num).fill(start).map((val, i) => val + i * step);
+		linspace: (
+			start: number,
+			stop: number,
+			num: number,
+			opt?: {
+				precision?: number;
+				endpoint?: boolean;
+			},
+		): Float64Array => {
+			opt = opt ?? { precision: 3, endpoint: true };
+			opt.endpoint = opt.endpoint ?? true;
+			opt.precision = opt.precision ?? 3;
 
-			return new VecN(vec);
+			const step =
+				+((stop - (opt.endpoint ? start : start - 1)) / (num - 1))
+					.toPrecision(
+						opt.precision,
+					);
+			const arr = new Float64Array(num).fill(start).map((n, i) =>
+				+(n + i * step).toPrecision(
+					opt.precision,
+				)
+			);
+
+			return arr;
 		},
 
 		// vstack
