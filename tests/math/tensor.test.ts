@@ -14,26 +14,36 @@ describe('Tensor', () => {
 
     it('should add two tensors correctly', () => {
         const result = tensorA.add(tensorB);
-        expect(result.data).toEqual([[6, 8], [10, 12]]);
+        expect(result.tensor).toEqual([[6, 8], [10, 12]]);
     });
 
     it('should subtract two tensors correctly', () => {
         const result = tensorA.subtract(tensorB);
-        expect(result.data).toEqual([[-4, -4], [-4, -4]]);
+        expect(result.tensor).toEqual([[-4, -4], [-4, -4]]);
     });
 
     it('should multiply two tensors correctly', () => {
         const result = tensorA.multiply(tensorB);
-        expect(result.data).toEqual([[5, 12], [21, 32]]);
+        expect(result.tensor).toEqual([[5, 12], [21, 32]]);
     });
 
     it('should divide two tensors correctly', () => {
         const result = tensorA.divide(tensorB);
-        expect(result.data).toEqual([[0.2, 0.3333333333333333], [0.42857142857142855, 0.5]]);
+        expect(result.tensor).toEqual([[0.2, 0.3333333333333333], [0.42857142857142855, 0.5]]);
     });
 
     it('should throw an error when adding tensors of different shapes', () => {
         const tensorC = new Tensor([[1, 2, 3], [4, 5, 6]]);
         expect(() => tensorA.add(tensorC)).toThrow('Tensors must have the same shape');
     });
+
+    it('should zero the tensor', () => {
+        const result = tensorA.zero();
+        expect(result.tensor).toEqual([[0, 0], [0, 0]])
+    });
+
+    it('should scale the tensor correctly', () => {
+        const result = tensorA.scale(5);
+        expect(result.tensor).toEqual([[5, 10], [15, 20]])
+    })
 });
