@@ -174,18 +174,15 @@ export const vec = () => {
 			num: number,
 			opt?: {
 				precision?: number;
-				endpoint?: boolean;
 			},
 		): Float64Array => {
-			opt = opt ?? { precision: 3, endpoint: true };
-			opt.endpoint = opt.endpoint ?? true;
+			opt = opt ?? { precision: 3 };
 			opt.precision = opt.precision ?? 3;
 
-			const step =
-				+((stop - (opt.endpoint ? start : start - 1)) / (num - 1))
-					.toPrecision(
-						opt.precision,
-					);
+			const step = +((stop - start) / (num - 1))
+				.toPrecision(
+					opt.precision,
+				);
 			const arr = new Float64Array(num).fill(start).map((n, i) =>
 				+(n + i * step).toPrecision(
 					opt.precision,
