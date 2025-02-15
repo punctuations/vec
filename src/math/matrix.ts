@@ -216,7 +216,7 @@ export class Matrix {
 	}
 
 	/**
-	 * Column space of matrix.
+	 * Column space of matrix. (col vectors)
 	 *
 	 * @returns VecN[] | Vec1[] | Vec2[] | Vec3[]
 	 */
@@ -256,7 +256,16 @@ export class Matrix {
 	}
 
 	/**
-	 * Range of the matrix.
+	 * Alias of {@link col}
+	 *
+	 * @returns VecN[] | Vec1[] | Vec2[] | Vec3[]
+	 */
+	get col_vec(): (VecN | Vec1 | Vec2 | Vec3)[] {
+		return this.col();
+	}
+
+	/**
+	 * Range of the matrix. (row vectors)
 	 *
 	 * @returns VecN[] | Vec1[] | Vec2[] | Vec3[]
 	 */
@@ -284,6 +293,15 @@ export class Matrix {
 		}
 
 		return range;
+	}
+
+	/**
+	 * Alias of {@link range}
+	 *
+	 * @returns VecN[] | Vec1[] | Vec2[] | Vec3[]
+	 */
+	get row_vec(): (VecN | Vec1 | Vec2 | Vec3)[] {
+		return this.range();
 	}
 
 	/**

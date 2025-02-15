@@ -1,7 +1,7 @@
 import { describe, it } from 'jsr:@std/testing/bdd';
 import { expect } from 'jsr:@std/expect';
 
-import { Vec1, Vec2, Vec3, VecN } from '../../src/index.ts';
+import { Vec1, Vec2, Vec3, VecN } from '../../src/mod.ts';
 import { Matrix } from '../../src/math/matrix.ts';
 
 describe('Vec1', () => {

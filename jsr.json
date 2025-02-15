@@ -1,0 +1,15 @@
+{
+	"name": "@coords/vec",
+	"version": "0.0.1",
+	"license": "MIT",
+	"exports": {
+		".": "./src/mod.ts",
+		"vec": "./src/vec.ts",
+		"matrix": "./src/math/matrix.ts",
+		"tensor": "./src/math/tensor.ts",
+		"1D": "./src/1D/index.ts",
+		"2D": "./src/2D/index.ts",
+		"3D": "./src/3D/index.ts",
+		"N": "./src/N/index.ts"
+	}
+}

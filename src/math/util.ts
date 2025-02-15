@@ -6,7 +6,7 @@ import {
 	Vector1Like,
 	Vector2Like,
 	Vector3Like,
-} from '../index.ts';
+} from '../mod.ts';
 import { VectorNLike } from '../N/index.ts';
 
 export type Vecs = Vec1 | Vec2 | Vec3 | VecN;

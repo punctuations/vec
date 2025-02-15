@@ -1,5 +1,5 @@
-import { Vec2, Vec3 } from './src/index.ts';
-import { vec } from './src/index.ts';
+import { Vec2, Vec3 } from './src/mod.ts';
+import { vec } from './src/mod.ts';
 
 let v = new Vec3([1, 1, 1]); // => [1, 1, 1]
 

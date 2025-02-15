@@ -1,6 +1,6 @@
 import { Vec2 } from '../2D/index.ts';
 import { Vec3, VectorF } from '../3D/index.ts';
-import { VecN } from '../index.ts';
+import { VecN } from '../mod.ts';
 import { Matrix, MatrixLike } from '../math/matrix.ts';
 
 export type Vector1Like = VectorF | [number] | number;

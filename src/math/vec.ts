@@ -1,9 +1,10 @@
 import { Vec2, Vector2Like } from '../2D/index.ts';
 import { Vec3, Vector3Like, VectorF } from '../3D/index.ts';
-import { Vec1 } from '../1D/index.ts';
+import { Vec1, type Vector1Like } from '../1D/index.ts';
 import { VecN, VectorNLike } from '../N/index.ts';
-import { _vectorizeLike, type Vector } from './util.ts';
-import { Matrix } from './matrix.ts';
+import { _vectorizeLike, type Vector, type VectorLikes } from './util.ts';
+import { Matrix, type MatrixLike } from './matrix.ts';
+import { Tensor, type TensorLike } from './tensor.ts';
 
 type Span = { basis: (VecN | Vec1 | Vec2 | Vec3)[]; dimension: number };
 
@@ -213,6 +214,32 @@ export const vec = () => {
 
 			// vstack matrix then transpose
 			return new Matrix(stack).T;
+		},
+
+		// SHORTHAND INITIALIZERS
+		tensor: (t: TensorLike | number) => {
+			return new Tensor(t);
+		},
+
+		matrix: (m: MatrixLike | number) => {
+			return new Matrix(m);
+		},
+
+		vector: (v: VectorLikes) => {
+			v = _vectorizeLike(v);
+			return new VecN(v);
+		},
+
+		vec1: (v: Vector1Like) => {
+			return new Vec1(v);
+		},
+
+		vec2: (v: Vector2Like) => {
+			return new Vec2(v);
+		},
+
+		vec3: (v: Vector3Like) => {
+			return new Vec3(v);
 		},
 	};
 };

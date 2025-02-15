@@ -1,6 +1,6 @@
 import { Vec1 } from '../1D/index.ts';
 import { Vec2 } from '../2D/index.ts';
-import { VecN } from '../index.ts';
+import { VecN } from '../mod.ts';
 import { Matrix, type MatrixLike } from '../math/matrix.ts';
 
 export type VectorF = Float32Array | Float64Array;

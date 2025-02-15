@@ -2,7 +2,7 @@ import { describe, it } from 'jsr:@std/testing/bdd';
 import { expect } from 'jsr:@std/expect';
 
 import { Matrix } from '../../src/math/matrix.ts';
-import { Vec2 } from '../../src/index.ts';
+import { Vec2 } from '../../src/mod.ts';
 
 describe('Matrix', () => {
     it('transpose', () => {
