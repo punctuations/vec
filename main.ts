@@ -1,5 +1,5 @@
-import { Vec2, Vec3 } from './src';
-import { vec } from './src';
+import { Vec2, Vec3 } from './src/index.ts';
+import { vec } from './src/index.ts';
 
 let v = new Vec3([1, 1, 1]); // => [1, 1, 1]
 
@@ -7,8 +7,11 @@ let v1 = v.clone().rotate(90, 0, 'deg');
 
 v.dot(v1); // 0
 
-for (let i in v) {
-	// test iteration
+// symbol.iterator test
+const iter = [...v];
+console.log(iter);
+
+for (let i of v) {
 	console.log(i);
 }
 
@@ -28,3 +31,11 @@ let zeroVector = vec().zero(3); // [0, 0, 0]
 
 // to implement
 // vec().collinear([[1, 0], [0, 1]], [1, 6]); // true
+
+
+// matrix
+const m1 = vec().hstack([[1, 2, 3, 4], [4, 3, 2, 1]]);
+const m2 = vec().vstack([[1, 2, 3, 4], [4, 3, 2, 1]]);
+
+console.log(m1);
+console.log(m2);

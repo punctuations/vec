@@ -1,9 +1,9 @@
 import { Vec2 } from '../2D/index.ts';
-import { Vec3, Vector } from '../3D/index.ts';
+import { Vec3, VectorF } from '../3D/index.ts';
 import { VecN } from '../index.ts';
 import { Matrix, MatrixLike } from '../math/matrix.ts';
 
-export type Vector1Like = Vector | [number] | number;
+export type Vector1Like = VectorF | [number] | number;
 
 export class Vec1 {
 	private _coord: number;

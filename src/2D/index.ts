@@ -1,9 +1,9 @@
 import { Vec1 } from '../1D/index.ts';
-import { Vec3, Vector } from '../3D/index.ts';
+import { Vec3, VectorF } from '../3D/index.ts';
 import { VecN } from '../N/index.ts';
 import { Matrix, type MatrixLike } from '../math/matrix.ts';
 
-export type Vector2Like = Vector | [number, number] | { x: number; y: number };
+export type Vector2Like = VectorF | [number, number] | { x: number; y: number };
 
 type Axis2D = 'x' | 'y' | 'i' | 'j';
 
@@ -59,7 +59,7 @@ export class Vec2 {
 		return Math.hypot(this._x, this._y);
 	}
 
-	private _vectorize(v: Vector2Like | Vec2): Vector | [number, number] {
+	private _vectorize(v: Vector2Like | Vec2): VectorF | [number, number] {
 		if (v instanceof Vec2) return v.coords;
 
 		if (

@@ -1,16 +1,13 @@
 import { Vec2, Vector2Like } from '../2D/index.ts';
-import { Vec3, Vector, Vector3Like } from '../3D/index.ts';
+import { Vec3, Vector3Like, VectorF } from '../3D/index.ts';
 import { Vec1 } from '../1D/index.ts';
 import { VecN, VectorNLike } from '../N/index.ts';
-import { _vectorizeLike } from './util.ts';
+import { _vectorizeLike, type Vector } from './util.ts';
 import { Matrix } from './matrix.ts';
 
 type Span = { basis: (VecN | Vec1 | Vec2 | Vec3)[]; dimension: number };
 
-export const vec = (domain?: [number, number], range?: [number, number]) => {
-	domain = domain || [2, 3];
-	range = range || [2, 3];
-
+export const vec = () => {
 	return {
 		add: (
 			v1: Vector2Like | Vector3Like,
@@ -48,7 +45,7 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 		},
 
 		fromArray: (
-			buffer: number[] | Vector,
+			buffer: number[] | VectorF,
 			stride: number,
 		): (Vec1 | Vec2 | Vec3 | VecN)[] => {
 			if (buffer.length % stride !== 0) {
@@ -161,6 +158,44 @@ export const vec = (domain?: [number, number], range?: [number, number]) => {
 		zero: (n: number): VecN => {
 			// return a zero vector in R^n
 			return new VecN(Array(n).fill(0));
+		},
+
+		/**
+		 * Linearly spaced vector/array.
+		 *
+		 * @param start number to start from
+		 * @param stop number to stop at
+		 * @param num amount of numbers
+		 * @returns VecN
+		 */
+		linspace: (start: number, stop: number, num: number): VecN => {
+			const step = (stop - start) / (num - 1);
+			const vec = Array(num).fill(start).map((val, i) => val + i * step);
+
+			return new VecN(vec);
+		},
+
+		// vstack
+		vstack: (v: Vector[]): Matrix => {
+			// v is an array of vectors
+
+			return new Matrix(v.map((vec) => {
+				vec = _vectorizeLike(vec);
+				return vec;
+			}));
+		},
+
+		// hstack
+		hstack: (v: Vector[]): Matrix => {
+			// v is an array of vectors
+
+			const stack = v.map((vec) => {
+				vec = _vectorizeLike(vec);
+				return vec;
+			});
+
+			// vstack matrix then transpose
+			return new Matrix(stack).T;
 		},
 	};
 };

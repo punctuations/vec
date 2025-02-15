@@ -1,10 +1,10 @@
 import { Vec1 } from '../1D/index.ts';
 import { Vec2, Vector2Like } from '../2D/index.ts';
-import { Vec3, Vector, Vector3Like } from '../3D/index.ts';
+import { Vec3, Vector3Like, VectorF } from '../3D/index.ts';
 import { Matrix, type MatrixLike } from '../math/matrix.ts';
 
 export type VectorNLike =
-	| Vector
+	| VectorF
 	| Vector2Like
 	| Vector3Like
 	| number[]
@@ -72,7 +72,7 @@ export class VecN {
 		return Math.hypot(...Array.from(this._coords));
 	}
 
-	private _vectorize(v: VectorNLike | VecN): Vector | number[] {
+	private _vectorize(v: VectorNLike | VecN): VectorF | number[] {
 		if (v instanceof VecN) return v.coords;
 
 		if (typeof v == 'number') return new Array(v).fill(0);
@@ -126,6 +126,15 @@ export class VecN {
 	 * @returns Array
 	 */
 	toArray(): number[] {
+		return this.coords;
+	}
+
+	/**
+	 * Alias for {@link coords}.
+	 *
+	 * @returns Array
+	 */
+	asArray(): number[] {
 		return this.coords;
 	}
 

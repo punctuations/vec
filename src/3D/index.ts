@@ -3,9 +3,9 @@ import { Vec2 } from '../2D/index.ts';
 import { VecN } from '../index.ts';
 import { Matrix, type MatrixLike } from '../math/matrix.ts';
 
-export type Vector = Float32Array | Float64Array;
+export type VectorF = Float32Array | Float64Array;
 export type Vector3Like =
-	| Vector
+	| VectorF
 	| [number, number, number]
 	| { x: number; y: number; z: number }
 	| { i: number; j: number; k: number };
@@ -76,7 +76,7 @@ export class Vec3 {
 
 	private _vectorize(
 		v: Vector3Like | Vec3,
-	): Vector | [number, number, number] {
+	): VectorF | [number, number, number] {
 		if (v instanceof Vec3) return [v.x, v.y, v.z];
 
 		if (
