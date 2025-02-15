@@ -207,7 +207,7 @@ export class Matrix {
 	/**
 	 * Apply scalar (λ) to matrix.
 	 *
-	 * @param scalar scalar number
+	 * @param lambda scalar number
 	 */
 	scale(lambda: number): Matrix {
 		this._setScalar(lambda);
